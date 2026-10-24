@@ -112,7 +112,7 @@ if (!auth || !db) {
     window.__mcuWatched = watched;
     saveLocal();
     scheduleCloudSave();
-    document.dispatchEvent(new CustomEvent("tracker-updated"));
+    document.dispatchEvent(new CustomEvent("tracker-updated")); // Triggers UI Update
   }
 
   function toggleFavorite(movieId) {
@@ -126,7 +126,7 @@ if (!auth || !db) {
     window.__mcuFavorites = favorites;
     saveLocal();
     scheduleCloudSave();
-    document.dispatchEvent(new CustomEvent("tracker-updated"));
+    document.dispatchEvent(new CustomEvent("tracker-updated")); // Triggers UI Update
   }
 
   function resetTracker() {
