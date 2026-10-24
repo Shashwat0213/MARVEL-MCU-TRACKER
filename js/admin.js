@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════
    MCU TRACKER — MASTER ADMIN PANEL
-   TMDB search + Firestore CRUD + Users + Timers
+   TMDB search via Render + Firestore CRUD + Users + Timers
    ═══════════════════════════════════════════════════════════ */
 
 import {
@@ -18,6 +18,7 @@ const auth = window.__mcuAuth;
 const db = window.__mcuDb;
 
 const ADMIN_EMAIL = "mcutrackersupport@gmail.com";
+const RENDER_BACKEND_URL = "https://marvel-mcu-tracker.onrender.com"; // ✅ NEW BACKEND URL
 
 if (!auth || !db) {
   console.error("❌ admin.js: Firebase not initialized");
@@ -157,22 +158,8 @@ if (!auth || !db) {
     }
   }
 
-  /* ═══════════ TMDB SEARCH ═══════════ */
-  const TMDB_KEY_STORAGE = "mcuTmdbKey";
-
-  function getTmdbKey() {
-    try { return localStorage.getItem(TMDB_KEY_STORAGE) || ""; } catch (e) { return ""; }
-  }
-
-  function saveTmdbKey(key) {
-    try { localStorage.setItem(TMDB_KEY_STORAGE, key.trim()); } catch (e) {}
-  }
-
+  /* ═══════════ TMDB SEARCH VIA RENDER ═══════════ */
   async function tmdbSearch() {
-    const key = ($("tmdbKey") && $("tmdbKey").value.trim()) || getTmdbKey();
-    if (!key) { adminToast("Please paste your TMDB API key first.", true); return; }
-    saveTmdbKey(key);
-
     const type = ($("tmdbType") && $("tmdbType").value) || "movie";
     const queryText = $("tmdbQuery") ? $("tmdbQuery").value.trim() : "";
     if (!queryText) { adminToast("Type a title to search.", true); return; }
@@ -181,14 +168,10 @@ if (!auth || !db) {
     if (resultsEl) resultsEl.innerHTML = "<p style='padding:12px;opacity:0.7'>Searching TMDB…</p>";
 
     try {
-      const res = await fetch(
-        "https://api.themoviedb.org/3/search/" + type +
-        "?api_key=" + key +
-        "&query=" + encodeURIComponent(queryText) +
-        "&language=en-US"
-      );
-      if (!res.ok) throw new Error("TMDB error: " + res.status);
+      const res = await fetch(`${RENDER_BACKEND_URL}/api/tmdb/search?type=${type}&query=${encodeURIComponent(queryText)}`);
+      if (!res.ok) throw new Error("Server error: " + res.status);
       const data = await res.json();
+      
       const results = (data.results || []).slice(0, 20);
 
       if (!results.length) {
@@ -212,7 +195,7 @@ if (!auth || !db) {
         }).join("");
 
         resultsEl.querySelectorAll(".tmdb-result").forEach(card => {
-          card.addEventListener("click", () => fillFromTmdb(card.dataset.tmdbId, key, type));
+          card.addEventListener("click", () => fillFromTmdb(card.dataset.tmdbId, type));
         });
       }
     } catch (e) {
@@ -222,13 +205,9 @@ if (!auth || !db) {
     }
   }
 
-  async function fillFromTmdb(id, key, type) {
+  async function fillFromTmdb(id, type) {
     try {
-      const res = await fetch(
-        "https://api.themoviedb.org/3/" + type + "/" + id +
-        "?api_key=" + key +
-        "&language=en-US&append_to_response=credits,videos"
-      );
+      const res = await fetch(`${RENDER_BACKEND_URL}/api/tmdb/details/${type}/${id}`);
       const d = await res.json();
 
       const title = d.title || d.name || "";
@@ -589,29 +568,14 @@ if (!auth || !db) {
   /* ═══════════ EVENT BINDINGS ═══════════ */
   document.addEventListener("admin-open", openAdminPanel);
 
-  // Admin close
   const adminClose = $("adminClose");
   if (adminClose) adminClose.addEventListener("click", closeAdminPanel);
 
-  // Admin tabs
   document.querySelectorAll(".admin-tab").forEach(tab => {
     tab.addEventListener("click", () => switchAdminTab(tab.dataset.adminTab));
   });
 
-  // TMDB
-  const tmdbKeyInput = $("tmdbKey");
-  if (tmdbKeyInput) tmdbKeyInput.value = getTmdbKey();
-
-  const tmdbKeySave = $("tmdbKeySave");
-  if (tmdbKeySave) {
-    tmdbKeySave.addEventListener("click", () => {
-      const key = $("tmdbKey") ? $("tmdbKey").value.trim() : "";
-      if (!key) return adminToast("Enter key first", true);
-      saveTmdbKey(key);
-      adminToast("✓ TMDB key saved");
-    });
-  }
-
+  // TMDB Setup (removed local key input, now using render)
   const tmdbSearchBtn = $("tmdbSearch");
   if (tmdbSearchBtn) tmdbSearchBtn.addEventListener("click", tmdbSearch);
 
@@ -622,7 +586,6 @@ if (!auth || !db) {
     });
   }
 
-  // Movie form
   const savePublish = $("movieSavePublish");
   if (savePublish) savePublish.addEventListener("click", () => saveMovie("published"));
 
@@ -632,14 +595,12 @@ if (!auth || !db) {
   const formClear = $("movieFormClear");
   if (formClear) formClear.addEventListener("click", clearMovieForm);
 
-  // Catalog
   const catalogSearch = $("catalogSearch");
   if (catalogSearch) catalogSearch.addEventListener("input", loadCatalog);
 
   const catalogFilter = $("catalogFilter");
   if (catalogFilter) catalogFilter.addEventListener("change", loadCatalog);
 
-  // Timer
   const timerSave = $("timerSave");
   if (timerSave) timerSave.addEventListener("click", saveTimer);
 
@@ -653,11 +614,9 @@ if (!auth || !db) {
     });
   }
 
-  // Users
   const userSearch = $("userSearch");
   if (userSearch) userSearch.addEventListener("input", loadUsers);
 
-  // Escape
   document.addEventListener("keydown", e => {
     if (e.key === "Escape") {
       const panel = $("adminPanel");
@@ -665,5 +624,5 @@ if (!auth || !db) {
     }
   });
 
-  console.log("✅ Admin module loaded");
+  console.log("✅ Admin module loaded (Render Ready)");
 }
