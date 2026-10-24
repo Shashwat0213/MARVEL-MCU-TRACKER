@@ -41,4 +41,4 @@ window.showToast = (msg, type) => {
   setTimeout(() => { toast.className = "toast"; }, 3000);
 };
 
-console.log("✅ Firebase initialized");
+console.log("✅ Firebase initialized"); 
