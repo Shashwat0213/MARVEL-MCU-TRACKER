@@ -217,10 +217,12 @@
                 <button id="v3SaveName">Save</button>
             </div>
         </div>
+        
+        <!-- ⚡ RECOMMENDED NEXT (Fixed IDs) ⚡ -->
         <div class="v3-card">
-            <div class="v3-next-title">Recommended Next</div>
+            <div class="v3-next-title">RECOMMENDED NEXT</div>
             <div class="v3-next-movie" id="v3NextMovie">
-                <img id="v3NextPoster" src="" alt="Next movie poster">
+                <img id="v3NextPoster" src="" alt="Next movie poster" onerror="this.style.display='none'">
                 <div>
                     <strong id="v3NextTitle">Loading...</strong>
                     <span id="v3NextMeta">Your next unwatched movie</span>
@@ -492,12 +494,8 @@
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        console.log('✅ Service Worker registered:', registration.scope);
-      })
-      .catch(error => {
-        console.log('❌ Service Worker registration failed:', error);
-      });
+      .then(registration => console.log('✅ Service Worker registered:', registration.scope))
+      .catch(error => console.log('❌ Service Worker registration failed:', error));
   });
 }
 </script>
