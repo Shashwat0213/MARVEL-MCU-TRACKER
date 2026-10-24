@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════
    MCU TRACKER — MASTER ADMIN PANEL
-   TMDB search via Render + Firestore CRUD + Users + Timers
+   Timer Fix + Edit Feature Included
    ═══════════════════════════════════════════════════════════ */
 
 import {
@@ -18,7 +18,7 @@ const auth = window.__mcuAuth;
 const db = window.__mcuDb;
 
 const ADMIN_EMAIL = "mcutrackersupport@gmail.com";
-const RENDER_BACKEND_URL = "https://marvel-mcu-tracker.onrender.com"; // ✅ NEW BACKEND URL
+const RENDER_BACKEND_URL = "https://marvel-mcu-tracker.onrender.com"; 
 
 if (!auth || !db) {
   console.error("❌ admin.js: Firebase not initialized");
@@ -415,7 +415,7 @@ if (!auth || !db) {
     }
   }
 
-  /* ═══════════ TIMERS ═══════════ */
+  /* ═══════════ TIMERS (FIXED & EDITABLE) ═══════════ */
   async function loadTimers() {
     try {
       await requireAdmin();
@@ -427,7 +427,7 @@ if (!auth || !db) {
       if (!listEl) return;
 
       if (!timers.length) {
-        listEl.innerHTML = "<p style='padding:20px;text-align:center;opacity:0.6'>No timers.</p>";
+        listEl.innerHTML = "<p style='padding:20px;text-align:center;opacity:0.6'>No timers created yet.</p>";
         return;
       }
 
@@ -441,11 +441,38 @@ if (!auth || !db) {
             </div>
           </div>
           <div class="admin-row-actions">
+            <button data-timer-edit="${esc(t.id)}">✏️ Edit</button>
             <button class="danger" data-timer-delete="${esc(t.id)}">🗑️</button>
           </div>
         </div>`;
       }).join("");
 
+      // ⚡ EDIT Timer Functionality
+      listEl.querySelectorAll("[data-timer-edit]").forEach(btn => {
+        btn.onclick = () => {
+          const timer = timers.find(t => t.id === btn.dataset.timerEdit);
+          if (timer) {
+            $("timerTitle").value = timer.title || "";
+            // Convert to local ISO string for datetime-local input
+            if (timer.targetDate) {
+               const dateObj = new Date(timer.targetDate);
+               const offset = dateObj.getTimezoneOffset() * 60000;
+               const localISOTime = (new Date(dateObj.getTime() - offset)).toISOString().slice(0, 16);
+               $("timerDate").value = localISOTime;
+            } else {
+               $("timerDate").value = "";
+            }
+            $("timerPoster").value = timer.poster || "";
+            $("timerSubtitle").value = timer.subtitle || "";
+            
+            adminToast("✓ Timer loaded in form. Edit and save.");
+            // Scroll to form
+            $("timerTitle").scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        };
+      });
+
+      // 🗑️ DELETE Timer Functionality
       listEl.querySelectorAll("[data-timer-delete]").forEach(btn => {
         btn.onclick = async () => {
           if (!confirm("Delete this timer?")) return;
@@ -469,7 +496,9 @@ if (!auth || !db) {
       const date = dateEl ? dateEl.value : "";
       if (!title || !date) throw new Error("Title and date are required.");
 
-      const id = title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+      // Agar title "avengers-doomsday" jaisa hai toh fixed ID use karo, warna slug banao
+      let id = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      
       const posterEl = $("timerPoster");
       const subtitleEl = $("timerSubtitle");
 
@@ -482,8 +511,15 @@ if (!auth || !db) {
       }, { merge: true });
 
       const statusEl = $("timerStatus");
-      if (statusEl) { statusEl.textContent = "✓ Timer saved!"; statusEl.style.color = "var(--success)"; }
+      if (statusEl) { statusEl.textContent = "✓ Timer saved successfully!"; statusEl.style.color = "var(--success)"; }
       adminToast("✓ Timer saved");
+      
+      // Clear form after save
+      $("timerTitle").value = "";
+      $("timerDate").value = "";
+      $("timerPoster").value = "";
+      $("timerSubtitle").value = "";
+      
       loadTimers();
     } catch (e) {
       console.error(e);
@@ -575,7 +611,6 @@ if (!auth || !db) {
     tab.addEventListener("click", () => switchAdminTab(tab.dataset.adminTab));
   });
 
-  // TMDB Setup (removed local key input, now using render)
   const tmdbSearchBtn = $("tmdbSearch");
   if (tmdbSearchBtn) tmdbSearchBtn.addEventListener("click", tmdbSearch);
 
@@ -601,6 +636,7 @@ if (!auth || !db) {
   const catalogFilter = $("catalogFilter");
   if (catalogFilter) catalogFilter.addEventListener("change", loadCatalog);
 
+  // Timer Buttons
   const timerSave = $("timerSave");
   if (timerSave) timerSave.addEventListener("click", saveTimer);
 
@@ -624,5 +660,5 @@ if (!auth || !db) {
     }
   });
 
-  console.log("✅ Admin module loaded (Render Ready)");
+  console.log("✅ Admin module loaded (Timers Editable & PWA Ready)");
 }
