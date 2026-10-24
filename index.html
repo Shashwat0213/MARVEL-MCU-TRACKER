@@ -24,14 +24,9 @@
 <style>
 /* ═══════════ MCU LOADING SCREEN ═══════════ */
 #mcuLoader {
-  position: fixed;
-  inset: 0;
-  z-index: 999999;
-  background: #050810;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  position: fixed; inset: 0; z-index: 999999;
+  background: #050810; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
   transition: opacity 0.8s ease, visibility 0.8s ease;
 }
 #mcuLoader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
@@ -51,6 +46,13 @@
 @keyframes mcuTextPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 @keyframes mcuBar { 0% { left: -40%; } 100% { left: 100%; } }
 @keyframes mcuParticle { 0%, 100% { transform: translate(0, 0) scale(0); opacity: 0; } 50% { transform: translate(var(--x, 0), var(--y, 0)) scale(1); opacity: 1; } }
+
+/* Fix Google Button */
+#googleBtn {
+  width: 100%; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: #ffffff; color: #333333; border: 1px solid #cccccc; font-weight: 600; border-radius: 12px; padding: 10px;
+}
+#googleBtn:hover { background: #f5f5f5; }
 </style>
 </head>
 
@@ -77,14 +79,8 @@
 <div class="bg-layer"></div>
 
 <div class="container">
-
-    <!-- HEADER -->
     <header>
-        <h1 class="logo">
-            ⚡ MARVEL MCU TRACKER
-            <span class="powered">POWERED BY SHASHWAT</span>
-        </h1>
-
+        <h1 class="logo">⚡ MARVEL MCU TRACKER <span class="powered">POWERED BY SHASHWAT</span></h1>
         <div class="topbar">
             <button class="top-btn" id="themeBtn">🌙 Dark</button>
             <button class="top-btn" id="soundBtn">🔊 Sound</button>
@@ -92,7 +88,6 @@
         </div>
     </header>
 
-    <!-- AUTH UI -->
     <div class="auth-bar" id="authBar">
         <div class="auth-user" id="authUserBox">
             <span class="auth-avatar" id="authAvatar">S</span>
@@ -103,19 +98,16 @@
         <button class="auth-login-btn" id="authOpenBtn">👤 Login</button>
     </div>
 
-    <!-- AUTH MODAL -->
     <div class="auth-overlay" id="authOverlay" aria-hidden="true">
         <section class="auth-card" role="dialog" aria-modal="true">
             <button class="auth-close" id="authCloseBtn" aria-label="Close">×</button>
             <div class="auth-brand">⚡ MCU TRACKER ACCOUNT</div>
             <h2 id="authTitle">Welcome back</h2>
             <p id="authSubtitle">Sign in to keep your MCU journey tied to your account.</p>
-
             <div class="auth-tabs">
                 <button class="auth-tab active" data-auth-tab="login">Login</button>
                 <button class="auth-tab" data-auth-tab="signup">Create account</button>
             </div>
-
             <form class="auth-form" id="authForm">
                 <div class="auth-field" id="authNameField" style="display:none">
                     <label for="authName">Display name</label>
@@ -132,8 +124,7 @@
                 <div class="auth-message" id="authMessage"></div>
                 <button class="auth-submit" id="authSubmit" type="submit">Login</button>
                 
-                <!-- ⚡ GOOGLE BUTTON WITH REAL LOGO ⚡ -->
-                <button type="button" id="googleBtn" class="auth-logout-btn" style="width:100%;margin-top:8px; display:flex; align-items:center; justify-content:center; gap:10px;">
+                <button type="button" id="googleBtn">
                     <svg width="20" height="20" viewBox="0 0 48 48">
                         <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
                         <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
@@ -143,12 +134,10 @@
                     Continue with Google
                 </button>
             </form>
-
             <div class="auth-note">Your account is secured by Firebase Authentication.</div>
         </section>
     </div>
 
-    <!-- PREMIUM HERO -->
     <section class="premium-hero" aria-label="Premium MCU dashboard">
         <div class="hero-kicker">Marvel Inspired • Personal Watch Tracker</div>
         <h2 class="hero-title">Your MCU. Your Timeline.</h2>
@@ -158,13 +147,9 @@
         </div>
     </section>
 
-    <!-- DOOMSDAY COUNTDOWN -->
     <section class="doomsday-feature" id="doomsdayCountdown" aria-label="Avengers Doomsday countdown">
         <div class="doomsday-poster-wrap">
-            <img class="doomsday-poster"
-                 src="https://images.flickdirect.com/movies/avengers-doomsday/avengers-doomsday-poster.jpg"
-                 alt="Avengers: Doomsday poster"
-                 onerror="this.onerror=null; this.src='https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg';">
+            <img class="doomsday-poster" src="https://images.flickdirect.com/movies/avengers-doomsday/avengers-doomsday-poster.jpg" alt="Avengers: Doomsday poster" onerror="this.onerror=null; this.src='https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg';">
         </div>
         <div class="doomsday-content">
             <div class="doomsday-kicker">⚠ PHASE 6 • FINAL STORY TARGET</div>
@@ -180,7 +165,6 @@
         </div>
     </section>
 
-    <!-- THEME SWITCHER -->
     <section class="theme-switcher" aria-label="Hero theme selector">
         <span class="theme-label">Hero Theme</span>
         <button class="theme-choice active" data-hero-theme="cosmos">🌌 Cosmos</button>
@@ -192,7 +176,6 @@
         <button class="theme-choice" data-hero-theme="noir">🌅 Noir</button>
     </section>
 
-    <!-- THEME POSTER STRIP -->
     <section class="theme-poster-strip" aria-live="polite">
         <img id="themePoster" src="https://image.tmdb.org/t/p/w500/r7vmZjiyZw9rpJMQJdXpjgiCOk9.jpg" alt="Theme poster">
         <div class="theme-poster-info">
@@ -202,7 +185,6 @@
         <span class="theme-poster-chip">CINEMATIC THEME</span>
     </section>
 
-    <!-- V3 DASHBOARD -->
     <section class="v3-dashboard" aria-label="Personal MCU dashboard">
         <div class="v3-card">
             <div class="v3-profile">
@@ -228,7 +210,6 @@
             </div>
         </div>
         
-        <!-- ⚡ RECOMMENDED NEXT ⚡ -->
         <div class="v3-card">
             <div class="v3-next-title">RECOMMENDED NEXT</div>
             <div class="v3-next-movie" id="v3NextMovie">
@@ -241,47 +222,24 @@
         </div>
     </section>
 
-    <!-- MAIN PANEL -->
     <main class="panel">
-
         <div class="search-box">
             <span class="search-icon">🔍</span>
             <input type="text" id="search" placeholder="Search MCU movie..." autocomplete="off">
         </div>
-
         <section class="stats">
-            <div class="stat-card">
-                <div class="stat-icon">🎬</div>
-                <span class="stat-number" id="totalMovies">0</span>
-                <span class="stat-label">Total Movies</span>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">✅</div>
-                <span class="stat-number" id="watchedMovies">0</span>
-                <span class="stat-label">Watched</span>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">⏳</div>
-                <span class="stat-number" id="remainingMovies">0</span>
-                <span class="stat-label">Remaining</span>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">⭐</div>
-                <span class="stat-number" id="favoriteMovies">0</span>
-                <span class="stat-label">Favorites</span>
-            </div>
+            <div class="stat-card"><div class="stat-icon">🎬</div><span class="stat-number" id="totalMovies">0</span><span class="stat-label">Total Movies</span></div>
+            <div class="stat-card"><div class="stat-icon">✅</div><span class="stat-number" id="watchedMovies">0</span><span class="stat-label">Watched</span></div>
+            <div class="stat-card"><div class="stat-icon">⏳</div><span class="stat-number" id="remainingMovies">0</span><span class="stat-label">Remaining</span></div>
+            <div class="stat-card"><div class="stat-icon">⭐</div><span class="stat-number" id="favoriteMovies">0</span><span class="stat-label">Favorites</span></div>
         </section>
-
         <section class="progress-section">
             <div class="progress-header">
                 <span class="progress-title">MCU WATCH PROGRESS</span>
                 <span class="progress-percent" id="progressText">0/0 (0%)</span>
             </div>
-            <div class="progress">
-                <div class="progress-bar" id="progressBar"></div>
-            </div>
+            <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
         </section>
-
         <div class="filter-bar">
             <button class="filter-btn active" data-filter="all">🎬 All</button>
             <button class="filter-btn" data-filter="movie">🎬 Movies</button>
@@ -299,23 +257,14 @@
                 </select>
             </div>
         </div>
-
         <ul id="movieList" class="movie-list">
-            <li class="empty-state">
-                <div class="empty-icon">🎬</div>
-                <p>Loading movies…</p>
-            </li>
+            <li class="empty-state"><div class="empty-icon">🎬</div><p>Loading movies…</p></li>
         </ul>
-
     </main>
 
-    <footer>
-        © 2026 <span class="footer-highlight">Marvel Inspired MCU Tracker</span> — Powered by Shashwat
-    </footer>
-
+    <footer>© 2026 <span class="footer-highlight">Marvel Inspired MCU Tracker</span> — Powered by Shashwat</footer>
 </div>
 
-<!-- MOVIE DETAILS MODAL -->
 <div class="movie-modal" id="movieModal" aria-hidden="true">
     <div class="movie-modal-content">
         <button class="movie-modal-close" id="movieModalClose" aria-label="Close">✕</button>
@@ -336,7 +285,6 @@
     </div>
 </div>
 
-<!-- ADMIN PANEL -->
 <section class="admin-panel" id="adminPanel" aria-hidden="true">
     <div class="admin-inner">
         <header class="admin-header">
@@ -365,24 +313,15 @@
                 <div class="admin-stat"><b id="adminStatWatched">0</b><span>Watched</span></div>
                 <div class="admin-stat"><b id="adminStatFavs">0</b><span>Favorites</span></div>
             </div>
-            <div class="admin-card">
-                <h3>🏆 Top Watched</h3>
-                <div id="adminTopMovies"></div>
-            </div>
+            <div class="admin-card"><h3>🏆 Top Watched</h3><div id="adminTopMovies"></div></div>
         </div>
 
         <div class="admin-pane" data-admin-pane="add">
+            <!-- ⚡ TMDB Key input box has been REMOVED ⚡ -->
             <div class="admin-card tmdb-card">
                 <h3>🔍 TMDB Auto-Fill</h3>
-                <div class="tmdb-key-row">
-                    <input type="text" id="tmdbKey" placeholder="Paste TMDB API key (v3)">
-                    <button class="btn btn-secondary" id="tmdbKeySave">Save Key</button>
-                </div>
                 <div class="tmdb-search-row">
-                    <select id="tmdbType">
-                        <option value="movie">🎬 Movie</option>
-                        <option value="tv">📺 TV Series</option>
-                    </select>
+                    <select id="tmdbType"><option value="movie">🎬 Movie</option><option value="tv">📺 TV Series</option></select>
                     <input type="text" id="tmdbQuery" placeholder="Search English title…">
                     <button class="btn btn-primary" id="tmdbSearch">🔍 Search</button>
                 </div>
@@ -394,20 +333,12 @@
                 <div class="form-grid">
                     <input type="text" id="mId" placeholder="Unique ID (auto)">
                     <input type="text" id="mTitle" placeholder="Title *">
-                    <select id="mType">
-                        <option value="movie">🎬 Movie</option>
-                        <option value="series">📺 Series</option>
-                        <option value="special">⭐ Special</option>
-                    </select>
+                    <select id="mType"><option value="movie">🎬 Movie</option><option value="series">📺 Series</option><option value="special">⭐ Special</option></select>
                     <input type="number" id="mYear" placeholder="Year">
                     <input type="date" id="mReleaseDate">
                     <input type="number" id="mRating" step="0.1" placeholder="Rating 0-10">
                     <input type="text" id="mPhase" placeholder="Phase">
-                    <select id="mImportance">
-                        <option>Must Watch</option>
-                        <option>Important</option>
-                        <option>Optional</option>
-                    </select>
+                    <select id="mImportance"><option>Must Watch</option><option>Important</option><option>Optional</option></select>
                     <input type="number" id="mSlot" placeholder="Timeline Slot #">
                     <input type="text" id="mPoster" placeholder="Poster URL">
                     <input type="text" id="mBackdrop" placeholder="Backdrop URL">
@@ -431,11 +362,7 @@
             <div class="admin-card">
                 <div class="catalog-toolbar">
                     <input type="text" id="catalogSearch" placeholder="🔍 Search catalog…">
-                    <select id="catalogFilter">
-                        <option value="all">All</option>
-                        <option value="published">Published</option>
-                        <option value="draft">Drafts</option>
-                    </select>
+                    <select id="catalogFilter"><option value="all">All</option><option value="published">Published</option><option value="draft">Drafts</option></select>
                 </div>
                 <div id="catalogList" class="catalog-list"></div>
             </div>
@@ -456,10 +383,7 @@
                 </div>
                 <p class="form-status" id="timerStatus"></p>
             </div>
-            <div class="admin-card">
-                <h3>Active Timers</h3>
-                <div id="timerList"></div>
-            </div>
+            <div class="admin-card"><h3>Active Timers</h3><div id="timerList"></div></div>
         </div>
 
         <div class="admin-pane" data-admin-pane="users">
@@ -481,7 +405,6 @@
 <script type="module" src="js/admin.js"></script>
 
 <script>
-// ═══════════ LOADER HIDE ═══════════
 (function() {
   function hideLoader() {
     const loader = document.getElementById("mcuLoader");
@@ -500,7 +423,6 @@
   }, 4000);
 })();
 
-// ═══════════ PWA SERVICE WORKER ═══════════
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
@@ -509,13 +431,10 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// ═══════════ RECOMMENDED NEXT FIX ═══════════
-// Ye function tumhare purane tracker.js ke event ko sunega aur UI update karega.
 document.addEventListener('tracker-updated', () => {
   updateRecommendedNextUI();
 });
 
-// Initial load ke liye thoda delay
 setTimeout(updateRecommendedNextUI, 1500);
 
 function updateRecommendedNextUI() {
@@ -526,11 +445,9 @@ function updateRecommendedNextUI() {
 
   if (!titleEl) return;
 
-  // movies.js se data uthao, ya local storage se
   let allMovies = window.__mcuMovies || [];
   let watched = window.__mcuWatched || JSON.parse(localStorage.getItem('mcuWatched')) || {};
 
-  // Agar movies abhi load nahi hui, toh wait karo
   if (!allMovies || allMovies.length === 0) {
     titleEl.textContent = "Loading...";
     return;
@@ -562,6 +479,5 @@ function updateRecommendedNextUI() {
   }
 }
 </script>
-
 </body>
 </html>
