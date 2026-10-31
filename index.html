@@ -47,8 +47,7 @@
 }
 #loginScreen::before {
   content: ""; position: absolute; inset: 0;
-  background: rgba(0, 0, 0, 0.75); /* Dark Overlay */
-  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px);
 }
 .login-box {
   position: relative; z-index: 2; width: 100%; max-width: 420px; 
@@ -70,26 +69,16 @@
 .auth-divider { display: flex; align-items: center; color: #6b7280; margin: 20px 0; font-size: 0.8rem; }
 .auth-divider::before, .auth-divider::after { content: ""; flex: 1; border-bottom: 1px solid #374151; margin: 0 10px; }
 
-/* ═══════════ HEADER (ORIGINAL WITH GLOW) ═══════════ */
+/* ═══════════ HEADER (RESPONSIVE & GLOW) ═══════════ */
 header { display: flex; flex-direction: column; align-items: center; gap: 15px; padding: 20px; margin-bottom: 25px; text-align: center; }
 .logo { 
   font-family: 'Orbitron', sans-serif;
-  font-size: 2.2rem; 
-  font-weight: 900; 
-  color: #fff; 
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin: 0;
-  text-shadow: 
-    0 0 10px #00e5ff,
-    0 0 20px #00e5ff,
-    0 0 40px #00e5ff,
-    0 0 80px #00e5ff; /* Glowing Neon Effect */
-  line-height: 1.2;
-  white-space: nowrap; /* Ek line me rakhne ke liye */
+  font-size: clamp(1.2rem, 6vw, 2.2rem);
+  font-weight: 900; color: #fff; letter-spacing: 1px; text-transform: uppercase; margin: 0;
+  text-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff, 0 0 40px #00e5ff; 
+  line-height: 1.2; white-space: normal; max-width: 100%; word-break: break-word;
 }
-.powered { display: block; font-size: 0.65rem; letter-spacing: 6px; color: #00e5ff; opacity: 0.9; margin-top: 8px; text-shadow: none; font-weight: 700; }
-
+.powered { display: block; font-size: 0.65rem; letter-spacing: 5px; color: #00e5ff; opacity: 0.9; margin-top: 8px; text-shadow: none; font-weight: 700; }
 .header-buttons-box { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; background: rgba(13, 20, 34, 0.7); padding: 10px 15px; border-radius: 16px; border: 1px solid var(--border); backdrop-filter: blur(10px); }
 .top-btn, .reset-btn, .auth-login-btn, .auth-logout-btn, .auth-admin-btn { padding: 10px 15px; border-radius: 10px; font-size: 0.75rem; font-weight: 700; border: 1px solid var(--border); transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; background: rgba(255,255,255,0.05); color: var(--text); }
 .top-btn:hover { background: rgba(255,255,255,0.1); }
@@ -157,7 +146,7 @@ header { display: flex; flex-direction: column; align-items: center; gap: 15px; 
 <div class="bg-layer"></div>
 
 <div class="container">
-    <!-- 3. ORIGINAL GLOWING HEADER -->
+    <!-- 3. RESPONSIVE GLOWING HEADER -->
     <header>
         <h1 class="logo">⚡ MARVEL MCU TRACKER<span class="powered">POWERED BY SHASHWAT</span></h1>
         
@@ -178,7 +167,7 @@ header { display: flex; flex-direction: column; align-items: center; gap: 15px; 
             <button class="auth-login-btn" id="authOpenBtn">👤 Login</button>
             <button class="auth-logout-btn" id="feedbackBtn">💬 Feedback</button>
         </div>
-    </header>    <!-- HIDDEN AUTH MODAL (Header Login button ke liye) -->
+    </header>    <!-- HIDDEN AUTH MODAL -->
     <div class="auth-overlay" id="authOverlay" aria-hidden="true">
         <section class="auth-card" role="dialog" aria-modal="true">
             <button class="auth-close" id="authCloseBtn" aria-label="Close">×</button>
@@ -372,9 +361,7 @@ header { display: flex; flex-direction: column; align-items: center; gap: 15px; 
     <button id="submitFeedbackBtn">Submit Feedback</button>
     <button id="closeFeedbackBtn" style="background: transparent; color: #fff; border: 1px solid #333; margin-top: 10px;">Cancel</button>
   </div>
-</div>
-
-<!-- Admin Panel -->
+</div><!-- Admin Panel -->
 <section class="admin-panel" id="adminPanel" aria-hidden="true">
     <div class="admin-inner">
         <header class="admin-header">
