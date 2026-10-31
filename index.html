@@ -53,6 +53,45 @@
   background: #ffffff; color: #333333; border: 1px solid #cccccc; font-weight: 600; border-radius: 12px; padding: 10px;
 }
 #googleBtn:hover { background: #f5f5f5; }
+
+/* ═══════════ WELCOME SCREEN (FIRST TIME USERS) ═══════════ */
+#welcomeScreen {
+  position: fixed; inset: 0; z-index: 99999;
+  background: radial-gradient(circle at center, #111827 0%, #05070d 100%);
+  display: none; /* JS se flex karenge */
+  flex-direction: column; align-items: center; justify-content: center;
+  padding: 20px; text-align: center;
+}
+#welcomeScreen .welcome-logo {
+  font-size: 50px; margin-bottom: 20px;
+  filter: drop-shadow(0 0 20px #00e5ff);
+}
+#welcomeScreen h1 {
+  font-family: Orbitron; font-size: 2rem; color: #fff; margin-bottom: 10px; letter-spacing: 2px;
+}
+#welcomeScreen p {
+  color: #9db4d1; margin-bottom: 40px; max-width: 400px; line-height: 1.6;
+}
+#welcomeScreen .welcome-buttons {
+  display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 300px;
+}
+#welcomeScreen .btn-login-main {
+  background: linear-gradient(135deg, #00e5ff, #0077ff);
+  color: #000; font-weight: 800; padding: 15px; border-radius: 12px;
+  font-size: 1rem; cursor: pointer; box-shadow: 0 0 20px rgba(0,229,255,0.4);
+}
+#welcomeScreen .btn-guest {
+  background: transparent; color: #9db4d1; border: 1px solid #18345b;
+  font-weight: 700; padding: 15px; border-radius: 12px; font-size: 1rem; cursor: pointer;
+}
+#welcomeScreen .btn-guest:hover { background: rgba(255,255,255,0.05); color: #fff; }
+
+/* Guest Mode Badge */
+.guest-badge {
+  display: none; background: rgba(255, 213, 74, 0.15); border: 1px solid #ffd54a;
+  color: #ffd54a; padding: 5px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 700;
+  margin-left: 10px;
+}
 </style>
 </head>
 
@@ -76,11 +115,33 @@
   <div class="loader-bar"></div>
 </div>
 
+<!-- ═══════════ WELCOME SCREEN (FIRST TIME) ═══════════ -->
+<div id="welcomeScreen">
+  <div class="welcome-logo">⚡</div>
+  <h1>Welcome to MCU Tracker</h1>
+  <p>Track your Marvel journey, mark movies as watched, and sync your progress across devices.</p>
+  
+  <div class="welcome-buttons">
+    <button class="btn-login-main" id="welcomeLoginBtn">Sign In / Sign Up</button>
+    <button class="btn-guest" id="welcomeGuestBtn">Continue as Guest</button>
+  </div>
+</div>
+
 <div class="bg-layer"></div>
 
 <div class="container">
     <header>
-        <h1 class="logo">⚡ MARVEL MCU TRACKER <span class="powered">POWERED BY SHASHWAT</span></h1>
+        <h1 class="logo" style="display: flex; align-items: center; gap: 15px; line-height: 1.1;">
+            <!-- Avengers 'A' Logo (SVG) -->
+            <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 10px #00e5ff);">
+                <circle cx="50" cy="50" r="46" stroke="#00e5ff" stroke-width="6" fill="rgba(0, 229, 255, 0.1)"/>
+                <path d="M50 15 L85 85 H65 L50 45 L35 85 H15 Z" fill="#00e5ff"/>
+            </svg>
+            <div style="display: flex; flex-direction: column;">
+                <span style="font-size: 1.6rem; font-weight: 900; letter-spacing: 2px;">MARVEL MCU TRACKER</span>
+                <span class="powered" style="font-size: 0.65rem; letter-spacing: 5px; margin-top: 4px;">POWERED BY SHASHWAT</span>
+            </div>
+        </h1>
         <div class="topbar">
             <button class="top-btn" id="themeBtn">🌙 Dark</button>
             <button class="top-btn" id="soundBtn">🔊 Sound</button>
@@ -92,12 +153,14 @@
         <div class="auth-user" id="authUserBox">
             <span class="auth-avatar" id="authAvatar">S</span>
             <strong id="authUserName">Guest</strong>
+            <span class="guest-badge" id="guestBadge">GUEST MODE</span>
             <button class="auth-logout-btn" id="authLogoutBtn">Logout</button>
             <button class="auth-admin-btn" id="authAdminBtn" style="display:none">🛡️ Admin</button>
         </div>
         <button class="auth-login-btn" id="authOpenBtn">👤 Login</button>
     </div>
 
+    <!-- Auth Modal -->
     <div class="auth-overlay" id="authOverlay" aria-hidden="true">
         <section class="auth-card" role="dialog" aria-modal="true">
             <button class="auth-close" id="authCloseBtn" aria-label="Close">×</button>
@@ -190,7 +253,7 @@
             <div class="v3-profile">
                 <div class="v3-greeting">
                     <small>Personal MCU Command Center</small>
-                    <h2 id="v3Greeting">Welcome back, Shashwat ⚡</h2>
+                    <h2 id="v3Greeting">Welcome back, Guest ⚡</h2>
                     <p>Your cinematic journey and progress — all in one place.</p>
                 </div>
                 <div class="v3-avatar" id="v3Avatar">S</div>
@@ -284,7 +347,7 @@
         </div>
     </div>
 </div>
-
+<!-- ADMIN PANEL -->
 <section class="admin-panel" id="adminPanel" aria-hidden="true">
     <div class="admin-inner">
         <header class="admin-header">
@@ -396,6 +459,7 @@
 
 <div class="toast" id="toast" role="alert"></div>
 
+<!-- SCRIPTS -->
 <script type="module" src="js/firebase.js"></script>
 <script type="module" src="js/theme.js"></script>
 <script type="module" src="js/auth.js"></script>
@@ -404,6 +468,7 @@
 <script type="module" src="js/admin.js"></script>
 
 <script>
+// ═══════════ WELCOME SCREEN & GUEST MODE LOGIC ═══════════
 (function() {
   function hideLoader() {
     const loader = document.getElementById("mcuLoader");
@@ -411,17 +476,68 @@
       setTimeout(() => {
         loader.classList.add("hidden");
         setTimeout(() => loader.remove(), 900);
+        
+        // Check if first time visitor
+        const hasVisited = localStorage.getItem('mcuVisited');
+        if (!hasVisited) {
+          // Show Welcome Screen
+          document.getElementById('welcomeScreen').style.display = 'flex';
+        }
       }, 1800);
     }
   }
   if (document.readyState === "complete") hideLoader();
   else window.addEventListener("load", hideLoader);
-  setTimeout(() => {
-    const loader = document.getElementById("mcuLoader");
-    if (loader && !loader.classList.contains("hidden")) loader.classList.add("hidden");
-  }, 4000);
 })();
 
+// Welcome Screen Logic
+document.addEventListener('DOMContentLoaded', () => {
+  const welcomeLoginBtn = document.getElementById('welcomeLoginBtn');
+  const welcomeGuestBtn = document.getElementById('welcomeGuestBtn');
+  const welcomeScreen = document.getElementById('welcomeScreen');
+  const guestBadge = document.getElementById('guestBadge');
+
+  // 1. Login Button (Welcome Screen)
+  if (welcomeLoginBtn) {
+    welcomeLoginBtn.addEventListener('click', () => {
+      welcomeScreen.style.display = 'none';
+      localStorage.setItem('mcuVisited', 'true');
+      // Open Login Modal
+      if (window.openAuthModal) window.openAuthModal();
+    });
+  }
+
+  // 2. Guest Button (Welcome Screen)
+  if (welcomeGuestBtn) {
+    welcomeGuestBtn.addEventListener('click', () => {
+      welcomeScreen.style.display = 'none';
+      localStorage.setItem('mcuVisited', 'true');
+      
+      // Set Guest Mode
+      window.__mcuUserRole = "guest";
+      window.__mcuUser = null;
+      
+      // Update UI
+      const authUserBox = document.getElementById("authUserBox");
+      const authOpenBtn = document.getElementById("authOpenBtn");
+      const authUserName = document.getElementById("authUserName");
+      
+      if (authUserBox) authUserBox.style.display = "flex";
+      if (authOpenBtn) authOpenBtn.style.display = "none";
+      if (authUserName) authUserName.textContent = "Guest";
+      if (guestBadge) guestBadge.style.display = "inline-block";
+      
+      window.showToast("✓ Entered as Guest. Progress saves locally.", "ok");
+    });
+  }
+
+  // 3. Hide Guest Badge if logged in
+  document.addEventListener("user-logged-in", () => {
+    if (guestBadge) guestBadge.style.display = "none";
+  });
+});
+
+// Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
@@ -430,6 +546,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// Recommended Next UI
 document.addEventListener('tracker-updated', () => {
   updateRecommendedNextUI();
 });
