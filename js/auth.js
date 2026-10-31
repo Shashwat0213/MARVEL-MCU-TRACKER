@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════
-   MCU TRACKER — AUTHENTICATION
-   Email/Password + Google Sign-In (Popup Flow)
+   MCU TRACKER — AUTHENTICATION + GUEST MODE
+   Email/Password + Google Sign-In + Guest Fallback
    ═══════════════════════════════════════════════════════════ */
 
 import {
@@ -143,6 +143,7 @@ if (!auth || !db) {
       if (authUserBox) authUserBox.style.display = "flex";
       if (authOpenBtn) authOpenBtn.style.display = "none";
       if (authUserName) authUserName.textContent = name;
+      
       if (authAvatar) {
         if (user.photoURL) {
           authAvatar.innerHTML = `<img src="${window.escapeHTML(user.photoURL)}" alt="${window.escapeHTML(name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
@@ -154,11 +155,21 @@ if (!auth || !db) {
       const adminBtn = $("authAdminBtn");
       if (adminBtn) adminBtn.style.display = role === "admin" ? "inline-block" : "none";
 
+      // ✅ Login hone par Guest button chhupao
+      const guestBtn = $("guestBtn");
+      if (guestBtn) guestBtn.style.display = "none";
+
       window.setSyncStatus("synced", "ok");
     } else {
       window.__mcuUserRole = null;
+      
+      // ✅ Logout hone par Guest button dikhao
       if (authUserBox) authUserBox.style.display = "none";
       if (authOpenBtn) authOpenBtn.style.display = "inline-block";
+      
+      const guestBtn = $("guestBtn");
+      if (guestBtn) guestBtn.style.display = "inline-block";
+
       window.setSyncStatus("not signed in", "idle");
     }
   }
@@ -221,7 +232,7 @@ if (!auth || !db) {
     }
   }
 
-  /* ═══════════ GOOGLE LOGIN — POPUP FLOW (Forced) ═══════════ */
+  /* ═══════════ GOOGLE LOGIN ═══════════ */
   async function handleGoogleLogin() {
     if (!googleBtn) return;
 
@@ -233,7 +244,6 @@ if (!auth || !db) {
     provider.setCustomParameters({ prompt: "select_account" });
 
     try {
-      // Popup flow — works when user gesture is direct click
       const result = await signInWithPopup(auth, provider);
       if (result.user) {
         await saveUserProfile(result.user);
@@ -270,6 +280,33 @@ if (!auth || !db) {
     }
   }
 
+  /* ═══════════ GUEST MODE LOGIC ═══════════ */
+  function handleGuestLogin() {
+    // Hide auth UI
+    if (authUserBox) authUserBox.style.display = "flex";
+    if (authOpenBtn) authOpenBtn.style.display = "none";
+    
+    // Update Guest UI
+    if (authUserName) authUserName.textContent = "Guest";
+    if (authAvatar) authAvatar.textContent = "G";
+    
+    // Hide Guest Button
+    const guestBtn = $("guestBtn");
+    if (guestBtn) guestBtn.style.display = "none";
+    
+    // Show Admin Button? (No, guest cannot be admin)
+    const adminBtn = $("authAdminBtn");
+    if (adminBtn) adminBtn.style.display = "none";
+
+    window.__mcuUserRole = "guest";
+    window.__mcuUser = null;
+    window.setSyncStatus("Guest mode", "idle");
+
+    // Load movies from local storage
+    document.dispatchEvent(new CustomEvent("tracker-updated"));
+    window.showToast("✓ Entered as Guest. Progress saves locally.", "ok");
+  }
+
   /* ═══════════ EVENT BINDINGS ═══════════ */
   if (authOpenBtn) authOpenBtn.addEventListener("click", openAuthModal);
   const authCloseBtn = $("authCloseBtn");
@@ -295,6 +332,12 @@ if (!auth || !db) {
 
   if (authForm) authForm.addEventListener("submit", handleAuthSubmit);
   if (googleBtn) googleBtn.addEventListener("click", handleGoogleLogin);
+
+  // ⚡ GUEST BUTTON CLICK ⚡
+  const guestBtn = $("guestBtn");
+  if (guestBtn) {
+    guestBtn.addEventListener("click", handleGuestLogin);
+  }
 
   const adminBtn = $("authAdminBtn");
   if (adminBtn) {
@@ -325,5 +368,5 @@ if (!auth || !db) {
   window.handleLogout = handleLogout;
   window.getUserRole = getUserRole;
 
-  console.log("✅ Auth module loaded");
+  console.log("✅ Auth module loaded (Guest Mode Supported)");
 }
