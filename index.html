@@ -20,73 +20,55 @@
 <link rel="stylesheet" href="css/animations.css">
 
 <style>
-/* ═══════════ MCU LOADING SCREEN ═══════════ */
+/* ═══════════ FAST LOADING SCREEN ═══════════ */
 #mcuLoader {
   position: fixed; inset: 0; z-index: 999999;
   background: #050810; display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  transition: opacity 0.8s ease, visibility 0.8s ease;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 #mcuLoader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-#mcuLoader .loader-scene { position: relative; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center; }
+#mcuLoader .loader-scene { position: relative; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; }
 #mcuLoader .ring { position: absolute; border-radius: 50%; border: 2px solid transparent; }
-#mcuLoader .ring-1 { width: 220px; height: 220px; border-top-color: #00e5ff; border-right-color: rgba(0,229,255,.3); animation: mcuSpin 2.2s linear infinite; }
-#mcuLoader .ring-2 { width: 180px; height: 180px; border-top-color: #a855f7; border-left-color: rgba(168,85,247,.3); animation: mcuSpin 1.6s linear infinite reverse; }
-#mcuLoader .ring-3 { width: 140px; height: 140px; border-bottom-color: #ffd700; border-right-color: rgba(255,215,0,.3); animation: mcuSpin 2.8s linear infinite; }
-#mcuLoader .core { font-size: 60px; filter: drop-shadow(0 0 25px #00e5ff) drop-shadow(0 0 50px #00e5ff); animation: mcuPulse 1.5s ease-in-out infinite; }
-#mcuLoader .title { margin-top: 40px; font-family: Orbitron, sans-serif; font-size: 22px; font-weight: 900; letter-spacing: 6px; color: #fff; text-shadow: 0 0 10px #00e5ff, 0 0 25px #00e5ff, 0 0 50px rgba(0,229,255,.5); animation: mcuTextPulse 2s ease-in-out infinite; }
-#mcuLoader .subtitle { margin-top: 12px; font-family: Orbitron, sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 8px; color: #00e5ff; opacity: 0.85; text-transform: uppercase; }
-#mcuLoader .loader-bar { margin-top: 30px; width: 200px; height: 3px; background: rgba(0,229,255,.15); border-radius: 3px; overflow: hidden; position: relative; }
-#mcuLoader .loader-bar::after { content: ""; position: absolute; top: 0; left: -40%; width: 40%; height: 100%; background: linear-gradient(90deg, transparent, #00e5ff, transparent); box-shadow: 0 0 12px #00e5ff; animation: mcuBar 1.5s ease-in-out infinite; }
-#mcuLoader .particle { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #00e5ff; box-shadow: 0 0 8px #00e5ff; animation: mcuParticle 3s ease-in-out infinite; }
+#mcuLoader .ring-1 { width: 150px; height: 150px; border-top-color: #00e5ff; animation: mcuSpin 1.5s linear infinite; }
+#mcuLoader .ring-2 { width: 120px; height: 120px; border-bottom-color: #a855f7; animation: mcuSpin 1.2s linear infinite reverse; }
+#mcuLoader .core { font-size: 40px; filter: drop-shadow(0 0 15px #00e5ff); animation: mcuPulse 1s ease-in-out infinite; }
+#mcuLoader .title { margin-top: 25px; font-family: Orbitron; font-size: 16px; font-weight: 900; letter-spacing: 4px; color: #fff; text-shadow: 0 0 10px #00e5ff; }
 @keyframes mcuSpin { to { transform: rotate(360deg); } }
-@keyframes mcuPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
-@keyframes mcuTextPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-@keyframes mcuBar { 0% { left: -40%; } 100% { left: 100%; } }
-@keyframes mcuParticle { 0%, 100% { transform: translate(0, 0) scale(0); opacity: 0; } 50% { transform: translate(var(--x, 0), var(--y, 0)) scale(1); opacity: 1; } }
+@keyframes mcuPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
-/* ═══════════ FULL SCREEN LOGIN PAGE ═══════════ */
+/* ═══════════ PROFESSIONAL LOGIN PAGE ═══════════ */
 #loginScreen {
   position: fixed; inset: 0; z-index: 99998;
-  background: radial-gradient(circle at center, #0f172a 0%, #05070d 100%);
+  background: radial-gradient(circle at top left, #111827, #05070d);
   display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
 }
 .login-box {
-  width: 100%; max-width: 400px; background: rgba(13, 20, 34, 0.85);
-  border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 24px; padding: 35px 25px;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 229, 255, 0.1);
-  text-align: center; backdrop-filter: blur(15px);
+  width: 100%; max-width: 420px; background: rgba(17, 24, 39, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 40px 30px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); backdrop-filter: blur(12px);
+  text-align: center;
 }
-.login-box h1 { font-family: Orbitron; font-size: 1.8rem; color: #fff; margin-bottom: 5px; }
-.login-box p { color: #9db4d1; font-size: 0.85rem; margin-bottom: 25px; }
-.login-input-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-.login-input-group input { width: 100%; padding: 14px; border-radius: 12px; background: rgba(0,0,0,0.5); border: 1px solid #18345b; color: #fff; outline: none; }
-.login-input-group input:focus { border-color: #00e5ff; box-shadow: 0 0 10px rgba(0,229,255,0.2); }
-.btn-auth-main { width: 100%; padding: 14px; border-radius: 12px; border: none; background: linear-gradient(135deg, #00e5ff, #0077ff); color: #000; font-weight: 800; cursor: pointer; margin-bottom: 12px; }
-.btn-auth-google { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #ccc; background: #fff; color: #333; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; margin-bottom: 12px; }
-.btn-auth-guest { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #18345b; background: transparent; color: #9db4d1; font-weight: 700; cursor: pointer; }
-.auth-divider { display: flex; align-items: center; color: #6f87a5; margin: 15px 0; font-size: 0.8rem; }
-.auth-divider::before, .auth-divider::after { content: ""; flex: 1; border-bottom: 1px solid #18345b; margin: 0 10px; }
+.login-box h1 { font-family: Orbitron; font-size: 1.8rem; color: #fff; margin-bottom: 8px; }
+.login-box p { color: #9ca3af; font-size: 0.9rem; margin-bottom: 30px; }
+.login-input-group { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
+.login-input-group input { width: 100%; padding: 15px; border-radius: 12px; background: rgba(0,0,0,0.3); border: 1px solid #374151; color: #fff; outline: none; font-size: 0.95rem; transition: 0.2s; }
+.login-input-group input:focus { border-color: #00e5ff; box-shadow: 0 0 0 3px rgba(0,229,255,0.1); }
+.btn-auth-main { width: 100%; padding: 15px; border-radius: 12px; border: none; background: linear-gradient(135deg, #00e5ff, #0077ff); color: #000; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.2s; margin-bottom: 15px; }
+.btn-auth-main:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-auth-google { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #374151; background: #fff; color: #333; font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: 0.2s; margin-bottom: 15px; }
+.btn-auth-google:hover { background: #f3f4f6; }
+.btn-auth-guest { width: 100%; padding: 15px; border-radius: 12px; border: none; background: transparent; color: #9ca3af; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: 0.2s; }
+.btn-auth-guest:hover { color: #fff; background: rgba(255,255,255,0.05); }
+.auth-divider { display: flex; align-items: center; color: #6b7280; margin: 20px 0; font-size: 0.8rem; }
+.auth-divider::before, .auth-divider::after { content: ""; flex: 1; border-bottom: 1px solid #374151; margin: 0 10px; }
 
-/* ═══════════ HEADER (SAME AS ORIGINAL) ═══════════ */
-header {
-  display: flex; flex-direction: column; align-items: center; gap: 15px;
-  padding: 20px; margin-bottom: 25px; text-align: center;
-}
+/* ═══════════ HEADER (ORIGINAL) ═══════════ */
+header { display: flex; flex-direction: column; align-items: center; gap: 15px; padding: 20px; margin-bottom: 25px; text-align: center; }
 .logo { display: flex; flex-direction: column; font-size: 2rem; font-weight: 900; color: var(--primary); text-shadow: 0 0 15px var(--primary); line-height: 1.1; margin: 0; }
 .powered { font-size: 0.65rem; letter-spacing: 5px; color: var(--primary); opacity: 0.8; margin-top: 5px; }
-
-.header-buttons-box {
-  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
-  background: rgba(13, 20, 34, 0.7); padding: 10px 15px; border-radius: 16px;
-  border: 1px solid var(--border); backdrop-filter: blur(10px);
-}
-.top-btn, .reset-btn, .auth-login-btn, .auth-logout-btn, .auth-admin-btn {
-  padding: 10px 15px; border-radius: 10px; font-size: 0.75rem; font-weight: 700;
-  border: 1px solid var(--border); transition: all 0.2s ease;
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  cursor: pointer; background: rgba(255,255,255,0.05); color: var(--text);
-}
+.header-buttons-box { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; background: rgba(13, 20, 34, 0.7); padding: 10px 15px; border-radius: 16px; border: 1px solid var(--border); backdrop-filter: blur(10px); }
+.top-btn, .reset-btn, .auth-login-btn, .auth-logout-btn, .auth-admin-btn { padding: 10px 15px; border-radius: 10px; font-size: 0.75rem; font-weight: 700; border: 1px solid var(--border); transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; background: rgba(255,255,255,0.05); color: var(--text); }
 .top-btn:hover { background: rgba(255,255,255,0.1); }
 .reset-btn { background: rgba(255, 61, 0, 0.15); color: #ff3d00; border-color: #ff3d00; }
 .reset-btn:hover { background: #ff3d00; color: #fff; }
@@ -113,25 +95,17 @@ header {
 
 <body class="theme-stark">
 
-<!-- LOADING SCREEN -->
+<!-- FAST LOADING SCREEN -->
 <div id="mcuLoader">
   <div class="loader-scene">
     <div class="ring ring-1"></div>
     <div class="ring ring-2"></div>
-    <div class="ring ring-3"></div>
     <div class="core">⚡</div>
-    <div class="particle" style="--x: -100px; --y: -80px; animation-delay: 0s;"></div>
-    <div class="particle" style="--x: 120px; --y: -60px; animation-delay: 0.5s;"></div>
-    <div class="particle" style="--x: -80px; --y: 100px; animation-delay: 1s;"></div>
-    <div class="particle" style="--x: 90px; --y: 110px; animation-delay: 1.5s;"></div>
-    <div class="particle" style="--x: 0; --y: -120px; animation-delay: 2s;"></div>
   </div>
   <div class="title">MCU TRACKER</div>
-  <div class="subtitle">LOADING UNIVERSE</div>
-  <div class="loader-bar"></div>
 </div>
 
-<!-- FULL SCREEN LOGIN PAGE -->
+<!-- PROFESSIONAL LOGIN PAGE -->
 <div id="loginScreen">
   <div class="login-box">
     <h1>MCU TRACKER</h1>
@@ -153,17 +127,15 @@ header {
 <div class="bg-layer"></div>
 
 <div class="container">
-    <!-- ORIGINAL HEADER DESIGN -->
+    <!-- ORIGINAL HEADER -->
     <header>
         <h1 class="logo">⚡ MARVEL MCU TRACKER <span class="powered">POWERED BY SHASHWAT</span></h1>
-        
         <div class="header-buttons-box">
             <button class="top-btn" id="themeBtn">🌙 Dark</button>
             <button class="top-btn" id="soundBtn">🔊 Sound</button>
             <button class="top-btn" id="installBtn" style="display:none; background: #10b981; color: #fff;">⬇️ Install App</button>
             <button class="reset-btn" id="resetBtn">🔄 Reset</button>
         </div>
-
         <div class="header-buttons-box" id="authBar" style="margin-top: 10px;">
             <div class="auth-user" id="authUserBox" style="display: none; align-items: center; gap: 8px;">
                 <span class="auth-avatar" id="authAvatar">S</span>
@@ -175,6 +147,7 @@ header {
             <button class="auth-logout-btn" id="feedbackBtn">💬 Feedback</button>
         </div>
     </header>
+
     <!-- Hidden Auth Modal -->
     <div class="auth-overlay" id="authOverlay" aria-hidden="true">
         <section class="auth-card" role="dialog" aria-modal="true">
@@ -217,14 +190,14 @@ header {
     </section>
 
     <!-- Doomsday Countdown -->
-    <section class="doomsday-feature" id="doomsdayCountdown" aria-label="Avengers Doomsday countdown">
+    <section class="doomsday-feature" id="doomsdayCountdown">
         <div class="doomsday-poster-wrap">
-            <img class="doomsday-poster" src="https://images.flickdirect.com/movies/avengers-doomsday/avengers-doomsday-poster.jpg" alt="Avengers: Doomsday poster" onerror="this.onerror=null; this.src='https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg';">
+            <img class="doomsday-poster" src="https://images.flickdirect.com/movies/avengers-doomsday/avengers-doomsday-poster.jpg" onerror="this.src='https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg';">
         </div>
         <div class="doomsday-content">
             <div class="doomsday-kicker">⚠ PHASE 6 • FINAL STORY TARGET</div>
             <h2>AVENGERS: DOOMSDAY</h2>
-            <p>Live countdown to the Doomsday release. Indian Standard Time (IST).</p>
+            <p>Live countdown to the Doomsday release. IST.</p>
             <div class="doomsday-live-digits">
                 <div><b id="doomsdayDays">000</b><span>Days</span></div>
                 <div><b id="doomsdayHours">00</b><span>Hours</span></div>
@@ -236,11 +209,11 @@ header {
     </section>
 
     <!-- Theme Switcher -->
-    <section class="theme-switcher" aria-label="Hero theme selector">
-        <span class="theme-label">Select Theme:</span>
-        <button class="theme-choice active" data-hero-theme="stark">🤖 Stark Tech</button>
+    <section class="theme-switcher">
+        <span class="theme-label">Theme:</span>
+        <button class="theme-choice active" data-hero-theme="stark">🤖 Stark</button>
         <button class="theme-choice" data-hero-theme="asgard">🌩️ Asgard</button>
-        <button class="theme-choice" data-hero-theme="hulk">💚 Hulk Smash</button>
+        <button class="theme-choice" data-hero-theme="hulk">💚 Hulk</button>
         <button class="theme-choice" data-hero-theme="wakanda">🐾 Wakanda</button>
         <button class="theme-choice" data-hero-theme="sanctum">🪄 Sanctum</button>
         <button class="theme-choice" data-hero-theme="doomsday">☠️ Doomsday</button>
@@ -248,7 +221,7 @@ header {
     </section>
 
     <section class="theme-poster-strip" aria-live="polite">
-        <img id="themePoster" src="https://image.tmdb.org/t/p/w500/r7vmZjiyZw9rpJMQJdXpjgiCOk9.jpg" alt="Theme poster">
+        <img id="themePoster" src="https://image.tmdb.org/t/p/w500/r7vmZjiyZw9rpJMQJdXpjgiCOk9.jpg">
         <div class="theme-poster-info">
             <strong id="themePosterTitle">Stark Tech</strong>
             <span id="themePosterSubtitle">Iron Man • Phase 1</span>
@@ -256,13 +229,14 @@ header {
         <span class="theme-poster-chip">CINEMATIC THEME</span>
     </section>
 
-    <section class="v3-dashboard" aria-label="Personal MCU dashboard">
+    <!-- Dashboard -->
+    <section class="v3-dashboard">
         <div class="v3-card">
             <div class="v3-profile">
                 <div class="v3-greeting">
                     <small>Personal MCU Command Center</small>
                     <h2 id="v3Greeting">Welcome back, Guest ⚡</h2>
-                    <p>Your cinematic journey and progress — all in one place.</p>
+                    <p>Your cinematic journey and progress.</p>
                 </div>
                 <div class="v3-avatar" id="v3Avatar">S</div>
             </div>
@@ -284,7 +258,7 @@ header {
         <div class="v3-card">
             <div class="v3-next-title">RECOMMENDED NEXT</div>
             <div class="v3-next-movie" id="v3NextMovie">
-                <img id="v3NextPoster" src="" alt="Next movie poster" onerror="this.style.display='none'">
+                <img id="v3NextPoster" src="" onerror="this.style.display='none'">
                 <div>
                     <strong id="v3NextTitle">Loading...</strong>
                     <span id="v3NextMeta">Your next unwatched movie</span>
@@ -293,13 +267,14 @@ header {
         </div>
     </section>
 
+    <!-- Main Panel -->
     <main class="panel" id="movieCatalog">
         <div class="search-box">
             <span class="search-icon">🔍</span>
             <input type="text" id="search" placeholder="Search MCU movie..." autocomplete="off">
         </div>
         <section class="stats">
-            <div class="stat-card"><div class="stat-icon">🎬</div><span class="stat-number" id="totalMovies">0</span><span class="stat-label">Total Movies</span></div>
+            <div class="stat-card"><div class="stat-icon">🎬</div><span class="stat-number" id="totalMovies">0</span><span class="stat-label">Total</span></div>
             <div class="stat-card"><div class="stat-icon">✅</div><span class="stat-number" id="watchedMovies">0</span><span class="stat-label">Watched</span></div>
             <div class="stat-card"><div class="stat-icon">⏳</div><span class="stat-number" id="remainingMovies">0</span><span class="stat-label">Remaining</span></div>
             <div class="stat-card"><div class="stat-icon">⭐</div><span class="stat-number" id="favoriteMovies">0</span><span class="stat-label">Favorites</span></div>
@@ -314,7 +289,7 @@ header {
         <div class="filter-bar">
             <button class="filter-btn active" data-filter="all">🎬 All</button>
             <button class="filter-btn" data-filter="movie">🎬 Movies</button>
-            <button class="filter-btn" data-filter="series">📺 Web Series</button>
+            <button class="filter-btn" data-filter="series">📺 Series</button>
             <button class="filter-btn" data-filter="watched">✅ Watched</button>
             <button class="filter-btn" data-filter="unwatched">⏳ Unwatched</button>
             <button class="filter-btn" data-filter="favorites">❤️ Favorites</button>
@@ -335,25 +310,23 @@ header {
     </main>
 
     <footer>© 2026 <span class="footer-highlight">Marvel Inspired MCU Tracker</span> — Powered by Shashwat</footer>
-</div>
-
-<!-- Movie Modal -->
+</div><!-- Movie Details Modal -->
 <div class="movie-modal" id="movieModal" aria-hidden="true">
     <div class="movie-modal-content">
-        <button class="movie-modal-close" id="movieModalClose" aria-label="Close">✕</button>
-        <img class="movie-modal-poster" id="modalPoster" src="" alt="Movie Poster">
+        <button class="movie-modal-close" id="movieModalClose">✕</button>
+        <img class="movie-modal-poster" id="modalPoster" src="">
         <div class="movie-modal-details">
             <h2 class="movie-modal-title" id="modalTitle">Movie Title</h2>
             <div class="movie-modal-meta" id="modalMeta"></div>
-            <p class="movie-modal-description" id="modalDescription">Movie details will appear here.</p>
+            <p class="movie-modal-description" id="modalDescription">Movie details...</p>
             <div class="modal-genres" id="modalGenres"></div>
             <div class="modal-cast" id="modalCast"></div>
             <div class="movie-modal-actions">
                 <button class="movie-modal-btn trailer-btn" id="modalTrailerBtn" style="display:none">▶ Trailer</button>
-                <a class="movie-modal-btn download-btn" id="modalDownloadBtn" style="display:none" target="_blank" rel="noopener">⬇ Download</a>
+                <a class="movie-modal-btn download-btn" id="modalDownloadBtn" style="display:none" target="_blank">⬇ Download</a>
                 <button class="movie-modal-btn watch-modal-btn" id="modalWatchBtn">✓ Mark Watched</button>
                 <button class="movie-modal-btn favorite-modal-btn" id="modalFavoriteBtn">♡ Favorite</button>
-                <button class="movie-modal-btn favorite-modal-btn" id="modalDropBtn" style="background:#ff3d00; color:#fff; border:none;">🗑️ Drop Movie</button>
+                <button class="movie-modal-btn favorite-modal-btn" id="modalDropBtn" style="background:#ff3d00; color:#fff;">🗑️ Drop Movie</button>
             </div>
         </div>
     </div>
@@ -363,11 +336,12 @@ header {
 <div id="feedbackModal">
   <div class="feedback-box">
     <h2>Send Feedback</h2>
-    <textarea id="feedbackText" placeholder="Tell us what you think or report a bug..."></textarea>
+    <textarea id="feedbackText" placeholder="Tell us what you think..."></textarea>
     <button id="submitFeedbackBtn">Submit Feedback</button>
     <button id="closeFeedbackBtn" style="background: transparent; color: #fff; border: 1px solid #333; margin-top: 10px;">Cancel</button>
   </div>
 </div>
+
 <!-- Admin Panel -->
 <section class="admin-panel" id="adminPanel" aria-hidden="true">
     <div class="admin-inner">
@@ -498,9 +472,8 @@ header {
 
 <!-- MAIN LOGIC SCRIPT -->
 <script>
-// ═══════════ WELCOME LOGIN PAGE & GUEST LOGIC ═══════════
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Hide Loader after 3 seconds and show Login Screen (if first time)
+  // 1. FAST LOADING (1.5 Seconds) & LOGIN SCREEN
   setTimeout(() => {
     const loader = document.getElementById("mcuLoader");
     if (loader) loader.classList.add("hidden");
@@ -509,9 +482,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!hasVisited) {
       document.getElementById("loginScreen").style.display = "flex";
     }
-  }, 2800);
+  }, 1500); // Fast 1.5s
 
-  // 2. Login Screen Buttons (Full Screen)
+  // 2. LOGIN SCREEN BUTTONS
   const loginScreen = document.getElementById("loginScreen");
   const btnGuestMain = document.getElementById("btnGuestMain");
   const btnLoginMain = document.getElementById("btnLoginMain");
@@ -545,7 +518,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const password = loginPassword.value;
       if (!email || !password) { alert("Please enter email and password."); return; }
       
-      // Fill hidden modal and submit
       document.getElementById('authEmail').value = email;
       document.getElementById('authPassword').value = password;
       document.getElementById('authForm').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
@@ -564,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 3. Explore Movies Button (Scroll to Catalog)
+  // 3. EXPLORE MOVIES BUTTON
   const exploreBtn = document.getElementById('heroExploreBtn');
   const movieCatalog = document.getElementById('movieCatalog');
   if (exploreBtn && movieCatalog) {
@@ -573,7 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 4. Feedback Modal
+  // 4. FEEDBACK MODAL (With Web3Forms Key)
   const feedbackBtn = document.getElementById('feedbackBtn');
   const feedbackModal = document.getElementById('feedbackModal');
   const closeFeedbackBtn = document.getElementById('closeFeedbackBtn');
@@ -601,7 +573,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let isEmailSent = false;
 
       try {
-        // 1. Firebase mein save karo
+        // Save to Firebase
         try {
           const { collection, addDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js");
           const db = window.__mcuDb;
@@ -612,17 +584,17 @@ document.addEventListener('DOMContentLoaded', () => {
           });
           isSavedInDB = true;
         } catch (dbError) {
-          console.error("Database save failed:", dbError);
+          console.error("DB Error:", dbError);
         }
 
-        // 2. Email bhejo (Web3Forms ke through)
+        // Send Email via Web3Forms (Your Key is added here)
         try {
           const response = await fetch("https://api.web3forms.com/submit", {
             method: "POST",
             headers: { "Content-Type": "application/json", "Accept": "application/json" },
             body: JSON.stringify({
-              access_key: "YAHAN_APNI_ACCESS_KEY_DALO", // ⚡ Yahan Web3Forms ki key daalo
-              subject: "⚡ New MCU Tracker Feedback Received",
+              access_key: "bc7dccc9-63ce-48a7-8eab-1d05811d824f", // ✅ Your Key
+              subject: "⚡ New MCU Tracker Feedback",
               from_name: "MCU Tracker",
               user_email: window.__mcuUser ? window.__mcuUser.email : "Guest",
               message: text
@@ -632,21 +604,19 @@ document.addEventListener('DOMContentLoaded', () => {
           const result = await response.json();
           if (result.success) isEmailSent = true;
         } catch (emailError) {
-          console.error("Email network error:", emailError);
+          console.error("Email Error:", emailError);
         }
 
-        // 3. Result dikhao
         if (isSavedInDB || isEmailSent) {
           alert("✅ Feedback sent successfully!");
           document.getElementById('feedbackText').value = "";
           feedbackModal.style.display = 'none';
         } else {
-          alert("❌ Failed to send feedback. Please try again.");
+          alert("❌ Failed to send feedback. Try again.");
         }
-
       } catch (e) {
-        console.error("General Error:", e);
-        alert("Something went wrong. Please try again.");
+        console.error(e);
+        alert("Something went wrong.");
       } finally {
         submitFeedbackBtn.textContent = "Submit Feedback";
         submitFeedbackBtn.disabled = false;
@@ -654,7 +624,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 5. Login Button in Header (Trigger Hidden Modal)
+  // 5. LOGIN BUTTON IN HEADER
   const authOpenBtn = document.getElementById("authOpenBtn");
   if (authOpenBtn) {
     authOpenBtn.addEventListener("click", () => {
@@ -668,7 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// ═══════════ PWA INSTALL BUTTON LOGIC ═══════════
+// PWA INSTALL BUTTON
 let deferredPrompt;
 const installBtn = document.getElementById('installBtn');
 
@@ -681,12 +651,11 @@ window.addEventListener('beforeinstallprompt', (e) => {
 if (installBtn) {
   installBtn.addEventListener('click', async () => {
     if (!deferredPrompt) {
-      alert("App is already installed or not supported on this browser.");
+      alert("App is already installed or not supported.");
       return;
     }
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    console.log(`User response to install prompt: ${outcome}`);
     deferredPrompt = null;
     installBtn.style.display = 'none';
   });
@@ -694,7 +663,6 @@ if (installBtn) {
 
 window.addEventListener('appinstalled', () => {
   if (installBtn) installBtn.style.display = 'none';
-  console.log('✅ MCU Tracker PWA installed successfully!');
 });
 </script>
 
