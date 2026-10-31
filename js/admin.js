@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════
    MCU TRACKER — MASTER ADMIN PANEL
-   Timer Fix + Edit Feature Included
+   Timer Edit & Save Fixed
    ═══════════════════════════════════════════════════════════ */
 
 import {
@@ -447,18 +447,23 @@ if (!auth || !db) {
         </div>`;
       }).join("");
 
-      // ⚡ EDIT Timer Functionality
       listEl.querySelectorAll("[data-timer-edit]").forEach(btn => {
         btn.onclick = () => {
           const timer = timers.find(t => t.id === btn.dataset.timerEdit);
           if (timer) {
             $("timerTitle").value = timer.title || "";
-            // Convert to local ISO string for datetime-local input
+            
+            // ⚡ FIX: Proper Date parsing for datetime-local input
             if (timer.targetDate) {
-               const dateObj = new Date(timer.targetDate);
-               const offset = dateObj.getTimezoneOffset() * 60000;
-               const localISOTime = (new Date(dateObj.getTime() - offset)).toISOString().slice(0, 16);
-               $("timerDate").value = localISOTime;
+              try {
+                const d = new Date(timer.targetDate);
+                // Format: YYYY-MM-DDThh:mm
+                const pad = (n) => String(n).padStart(2, '0');
+                const formatted = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+                $("timerDate").value = formatted;
+              } catch (e) {
+                $("timerDate").value = "";
+              }
             } else {
                $("timerDate").value = "";
             }
@@ -466,13 +471,11 @@ if (!auth || !db) {
             $("timerSubtitle").value = timer.subtitle || "";
             
             adminToast("✓ Timer loaded in form. Edit and save.");
-            // Scroll to form
             $("timerTitle").scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
         };
       });
 
-      // 🗑️ DELETE Timer Functionality
       listEl.querySelectorAll("[data-timer-delete]").forEach(btn => {
         btn.onclick = async () => {
           if (!confirm("Delete this timer?")) return;
@@ -496,9 +499,7 @@ if (!auth || !db) {
       const date = dateEl ? dateEl.value : "";
       if (!title || !date) throw new Error("Title and date are required.");
 
-      // Agar title "avengers-doomsday" jaisa hai toh fixed ID use karo, warna slug banao
       let id = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-      
       const posterEl = $("timerPoster");
       const subtitleEl = $("timerSubtitle");
 
@@ -514,7 +515,6 @@ if (!auth || !db) {
       if (statusEl) { statusEl.textContent = "✓ Timer saved successfully!"; statusEl.style.color = "var(--success)"; }
       adminToast("✓ Timer saved");
       
-      // Clear form after save
       $("timerTitle").value = "";
       $("timerDate").value = "";
       $("timerPoster").value = "";
@@ -636,7 +636,6 @@ if (!auth || !db) {
   const catalogFilter = $("catalogFilter");
   if (catalogFilter) catalogFilter.addEventListener("change", loadCatalog);
 
-  // Timer Buttons
   const timerSave = $("timerSave");
   if (timerSave) timerSave.addEventListener("click", saveTimer);
 
