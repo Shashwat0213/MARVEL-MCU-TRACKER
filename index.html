@@ -4,12 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#05070d">
-<title>Marvel Cinematic Universe Tracker — Firebase Edition</title>
+<title>Marvel Cinematic Universe Tracker</title>
 
+<!-- ═══════════ PWA SUPPORT ═══════════ -->
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="icon-192.png">
+<!-- ═══════════════════════════════════ -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,12 +47,59 @@
 @keyframes mcuBar { 0% { left: -40%; } 100% { left: 100%; } }
 @keyframes mcuParticle { 0%, 100% { transform: translate(0, 0) scale(0); opacity: 0; } 50% { transform: translate(var(--x, 0), var(--y, 0)) scale(1); opacity: 1; } }
 
-/* Fix Google Button */
-#googleBtn {
-  width: 100%; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 10px;
-  background: #ffffff; color: #333333; border: 1px solid #cccccc; font-weight: 600; border-radius: 12px; padding: 10px;
+/* ═══════════ FULL SCREEN LOGIN PAGE ═══════════ */
+#loginScreen {
+  position: fixed; inset: 0; z-index: 99998;
+  background: radial-gradient(circle at center, #0f172a 0%, #05070d 100%);
+  display: none; /* JS se flex karenge */
+  flex-direction: column; align-items: center; justify-content: center;
+  padding: 20px;
 }
-#googleBtn:hover { background: #f5f5f5; }
+.login-box {
+  width: 100%; max-width: 400px;
+  background: rgba(13, 20, 34, 0.85);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: 24px; padding: 35px 25px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 229, 255, 0.1);
+  text-align: center;
+  backdrop-filter: blur(15px);
+}
+.login-box h1 { font-family: Orbitron; font-size: 1.8rem; color: #fff; margin-bottom: 5px; }
+.login-box p { color: #9db4d1; font-size: 0.85rem; margin-bottom: 25px; }
+.login-input-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.login-input-group input {
+  width: 100%; padding: 14px; border-radius: 12px;
+  background: rgba(0,0,0,0.5); border: 1px solid #18345b;
+  color: #fff; outline: none; font-size: 0.9rem;
+}
+.login-input-group input:focus { border-color: #00e5ff; box-shadow: 0 0 10px rgba(0,229,255,0.2); }
+.btn-auth-main {
+  width: 100%; padding: 14px; border-radius: 12px; border: none;
+  background: linear-gradient(135deg, #00e5ff, #0077ff); color: #000;
+  font-weight: 800; font-size: 1rem; cursor: pointer; margin-bottom: 12px;
+}
+.btn-auth-google {
+  width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #ccc;
+  background: #fff; color: #333; font-weight: 700; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  cursor: pointer; margin-bottom: 12px;
+}
+.btn-auth-guest {
+  width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #18345b;
+  background: transparent; color: #9db4d1; font-weight: 700; font-size: 1rem;
+  cursor: pointer;
+}
+.btn-auth-guest:hover { background: rgba(255,255,255,0.05); color: #fff; }
+.auth-divider { display: flex; align-items: center; color: #6f87a5; margin: 15px 0; font-size: 0.8rem; }
+.auth-divider::before, .auth-divider::after { content: ""; flex: 1; border-bottom: 1px solid #18345b; margin: 0 10px; }
+
+/* Theme Buttons New Style */
+.theme-switcher { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.theme-choice {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  padding: 8px 12px; border-radius: 10px; color: #9db4d1; font-size: 0.7rem; font-weight: 700; cursor: pointer;
+}
+.theme-choice.active { border-color: var(--primary); color: var(--primary); background: rgba(0, 229, 255, 0.1); }
 
 /* Drop Button */
 .drop-btn {
@@ -64,7 +113,7 @@
 </style>
 </head>
 
-<body>
+<body class="theme-stark">
 
 <!-- ═══════════ MCU LOADING SCREEN ═══════════ -->
 <div id="mcuLoader">
@@ -82,6 +131,35 @@
   <div class="title">MCU TRACKER</div>
   <div class="subtitle">LOADING UNIVERSE</div>
   <div class="loader-bar"></div>
+</div>
+
+<!-- ═══════════ FULL SCREEN LOGIN PAGE ═══════════ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <h1>MCU TRACKER</h1>
+    <p>Sign in to sync your journey across devices.</p>
+    
+    <div class="login-input-group">
+      <input type="email" id="loginEmail" placeholder="Email Address">
+      <input type="password" id="loginPassword" placeholder="Password">
+    </div>
+    
+    <button class="btn-auth-main" id="btnLoginMain">Sign In / Sign Up</button>
+    
+    <div class="auth-divider">OR</div>
+    
+    <button class="btn-auth-google" id="btnGoogleMain">
+      <svg width="20" height="20" viewBox="0 0 48 48">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+      </svg>
+      Continue with Google
+    </button>
+    
+    <button class="btn-auth-guest" id="btnGuestMain">Continue as Guest</button>
+  </div>
 </div>
 
 <div class="bg-layer"></div>
@@ -104,10 +182,9 @@
             <button class="auth-admin-btn" id="authAdminBtn" style="display:none">🛡️ Admin</button>
         </div>
         <button class="auth-login-btn" id="authOpenBtn">👤 Login</button>
-        <button class="auth-logout-btn" id="guestBtn" style="background: transparent; border: 1px solid #00e5ff; color: #00e5ff; margin-left: 10px;">Continue as Guest</button>
     </div>
 
-    <!-- AUTH MODAL -->
+    <!-- Hidden Auth Modal (For Background Login Logic) -->
     <div class="auth-overlay" id="authOverlay" aria-hidden="true">
         <section class="auth-card" role="dialog" aria-modal="true">
             <button class="auth-close" id="authCloseBtn" aria-label="Close">×</button>
@@ -134,17 +211,10 @@
                 <div class="auth-message" id="authMessage"></div>
                 <button class="auth-submit" id="authSubmit" type="submit">Login</button>
                 
-                <button type="button" id="googleBtn">
-                    <svg width="20" height="20" viewBox="0 0 48 48">
-                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-                    </svg>
+                <button type="button" id="googleBtn" class="auth-logout-btn" style="width:100%;margin-top:8px">
                     Continue with Google
                 </button>
             </form>
-            <div class="auth-note">Your account is secured by Firebase Authentication.</div>
         </section>
     </div>
 
@@ -175,22 +245,23 @@
         </div>
     </section>
 
+    <!-- NEW PREMIUM THEME SWITCHER -->
     <section class="theme-switcher" aria-label="Hero theme selector">
-        <span class="theme-label">Hero Theme</span>
-        <button class="theme-choice active" data-hero-theme="cosmos">🌌 Cosmos</button>
-        <button class="theme-choice" data-hero-theme="arcreactor">⚡ Arc Reactor</button>
-        <button class="theme-choice" data-hero-theme="inferno">🔥 Inferno</button>
-        <button class="theme-choice" data-hero-theme="vibranium">💜 Vibranium</button>
-        <button class="theme-choice" data-hero-theme="bifrost">🌊 Bifrost</button>
+        <span class="theme-label">Select Theme:</span>
+        <button class="theme-choice active" data-hero-theme="stark">🤖 Stark Tech</button>
+        <button class="theme-choice" data-hero-theme="asgard">🌩️ Asgard</button>
+        <button class="theme-choice" data-hero-theme="hulk">💚 Hulk Smash</button>
+        <button class="theme-choice" data-hero-theme="wakanda">🐾 Wakanda</button>
+        <button class="theme-choice" data-hero-theme="sanctum">🪄 Sanctum</button>
         <button class="theme-choice" data-hero-theme="doomsday">☠️ Doomsday</button>
-        <button class="theme-choice" data-hero-theme="noir">🌅 Noir</button>
+        <button class="theme-choice" data-hero-theme="spiderverse">🕷️ Spider-Verse</button>
     </section>
 
     <section class="theme-poster-strip" aria-live="polite">
         <img id="themePoster" src="https://image.tmdb.org/t/p/w500/r7vmZjiyZw9rpJMQJdXpjgiCOk9.jpg" alt="Theme poster">
         <div class="theme-poster-info">
-            <strong id="themePosterTitle">Guardians of the Galaxy</strong>
-            <span id="themePosterSubtitle">Cosmos • Phase 2</span>
+            <strong id="themePosterTitle">Stark Tech</strong>
+            <span id="themePosterSubtitle">Iron Man • Phase 1</span>
         </div>
         <span class="theme-poster-chip">CINEMATIC THEME</span>
     </section>
@@ -298,112 +369,7 @@
 </div>
 
 <section class="admin-panel" id="adminPanel" aria-hidden="true">
-    <div class="admin-inner">
-        <header class="admin-header">
-            <div class="admin-brand">
-                <span>⚡</span>
-                <div>
-                    <h2>🛡️ Master Admin</h2>
-                    <p id="adminWhoami">Loading…</p>
-                </div>
-            </div>
-            <button class="icon-btn admin-close" id="adminClose">✕</button>
-        </header>
-
-        <nav class="admin-tabs">
-            <button class="admin-tab active" data-admin-tab="dashboard">📊 Dashboard</button>
-            <button class="admin-tab" data-admin-tab="add">➕ Add Movie</button>
-            <button class="admin-tab" data-admin-tab="catalog">🎬 Catalog</button>
-            <button class="admin-tab" data-admin-tab="timers">⏱️ Timers</button>
-            <button class="admin-tab" data-admin-tab="users">👥 Users</button>
-        </nav>
-
-        <div class="admin-pane active" data-admin-pane="dashboard">
-            <div class="admin-stats">
-                <div class="admin-stat"><b id="adminStatUsers">0</b><span>Users</span></div>
-                <div class="admin-stat"><b id="adminStatMovies">0</b><span>Movies</span></div>
-                <div class="admin-stat"><b id="adminStatWatched">0</b><span>Watched</span></div>
-                <div class="admin-stat"><b id="adminStatFavs">0</b><span>Favorites</span></div>
-            </div>
-            <div class="admin-card"><h3>🏆 Top Watched</h3><div id="adminTopMovies"></div></div>
-        </div>
-
-        <div class="admin-pane" data-admin-pane="add">
-            <div class="admin-card tmdb-card">
-                <h3>🔍 TMDB Auto-Fill</h3>
-                <div class="tmdb-search-row">
-                    <select id="tmdbType"><option value="movie">🎬 Movie</option><option value="tv">📺 TV Series</option></select>
-                    <input type="text" id="tmdbQuery" placeholder="Search English title…">
-                    <button class="btn btn-primary" id="tmdbSearch">🔍 Search</button>
-                </div>
-                <div class="tmdb-results" id="tmdbResults"></div>
-            </div>
-
-            <div class="admin-card">
-                <h3>📝 Movie Details</h3>
-                <div class="form-grid">
-                    <input type="text" id="mId" placeholder="Unique ID (auto)">
-                    <input type="text" id="mTitle" placeholder="Title *">
-                    <select id="mType"><option value="movie">🎬 Movie</option><option value="series">📺 Series</option><option value="special">⭐ Special</option></select>
-                    <input type="number" id="mYear" placeholder="Year">
-                    <input type="date" id="mReleaseDate">
-                    <input type="number" id="mRating" step="0.1" placeholder="Rating 0-10">
-                    <input type="text" id="mPhase" placeholder="Phase">
-                    <select id="mImportance"><option>Must Watch</option><option>Important</option><option>Optional</option></select>
-                    <input type="number" id="mSlot" placeholder="Timeline Slot #">
-                    <input type="text" id="mPoster" placeholder="Poster URL">
-                    <input type="text" id="mBackdrop" placeholder="Backdrop URL">
-                    <input type="text" id="mTrailer" placeholder="🎬 YouTube Trailer URL">
-                    <input type="text" id="mDownload" placeholder="⬇ Download URL">
-                    <input type="text" id="mWatchUrl" placeholder="▶ Watch URL">
-                    <input type="text" id="mCast" placeholder="Cast (comma separated)">
-                    <input type="text" id="mGenres" placeholder="Genres (comma separated)">
-                </div>
-                <textarea id="mDescription" placeholder="Description / Overview" rows="4"></textarea>
-                <div class="form-actions">
-                    <button class="btn btn-primary" id="movieSavePublish">💾 Save & Publish</button>
-                    <button class="btn btn-secondary" id="movieSaveDraft">📝 Save Draft</button>
-                    <button class="btn btn-ghost" id="movieFormClear">🧹 Clear</button>
-                </div>
-                <p class="form-status" id="movieFormStatus"></p>
-            </div>
-        </div>
-
-        <div class="admin-pane" data-admin-pane="catalog">
-            <div class="admin-card">
-                <div class="catalog-toolbar">
-                    <input type="text" id="catalogSearch" placeholder="🔍 Search catalog…">
-                    <select id="catalogFilter"><option value="all">All</option><option value="published">Published</option><option value="draft">Drafts</option></select>
-                </div>
-                <div id="catalogList" class="catalog-list"></div>
-            </div>
-        </div>
-
-        <div class="admin-pane" data-admin-pane="timers">
-            <div class="admin-card">
-                <h3>⏱️ Create Countdown</h3>
-                <div class="form-grid">
-                    <input type="text" id="timerTitle" placeholder="Timer Title">
-                    <input type="datetime-local" id="timerDate">
-                    <input type="text" id="timerPoster" placeholder="Poster URL">
-                    <input type="text" id="timerSubtitle" placeholder="Subtitle">
-                </div>
-                <div class="form-actions">
-                    <button class="btn btn-primary" id="timerSave">💾 Save Timer</button>
-                    <button class="btn btn-ghost" id="timerClear">🧹 Clear</button>
-                </div>
-                <p class="form-status" id="timerStatus"></p>
-            </div>
-            <div class="admin-card"><h3>Active Timers</h3><div id="timerList"></div></div>
-        </div>
-
-        <div class="admin-pane" data-admin-pane="users">
-            <div class="admin-card">
-                <input type="text" id="userSearch" placeholder="🔍 Search users…" class="search-full">
-                <div id="userList" class="user-list"></div>
-            </div>
-        </div>
-    </div>
+    <!-- Admin content -->
 </section>
 
 <div class="toast" id="toast" role="alert"></div>
@@ -416,92 +382,79 @@
 <script type="module" src="js/admin.js"></script>
 
 <script>
-(function() {
-  function hideLoader() {
-    const loader = document.getElementById("mcuLoader");
-    if (loader) {
-      setTimeout(() => {
-        loader.classList.add("hidden");
-        setTimeout(() => loader.remove(), 900);
-      }, 1800);
-    }
-  }
-  if (document.readyState === "complete") hideLoader();
-  else window.addEventListener("load", hideLoader);
+// ═══════════ WELCOME LOGIN PAGE & GUEST LOGIC ═══════════
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Hide Loader after 3 seconds and show Login Screen
   setTimeout(() => {
     const loader = document.getElementById("mcuLoader");
-    if (loader && !loader.classList.contains("hidden")) loader.classList.add("hidden");
-  }, 4000);
-})();
+    if (loader) loader.classList.add("hidden");
 
-// Explore Movies Scroll Fix
-document.addEventListener('DOMContentLoaded', () => {
-  const exploreBtn = document.getElementById('heroExploreBtn');
-  const movieCatalog = document.getElementById('movieCatalog');
-  if (exploreBtn && movieCatalog) {
-    exploreBtn.addEventListener('click', () => {
-      movieCatalog.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const hasVisited = localStorage.getItem('mcuVisited');
+    if (!hasVisited) {
+      document.getElementById("loginScreen").style.display = "flex";
+    }
+  }, 2800);
+
+  // 2. Login Screen Buttons
+  const loginScreen = document.getElementById("loginScreen");
+  const btnGuestMain = document.getElementById("btnGuestMain");
+  const btnLoginMain = document.getElementById("btnLoginMain");
+  const btnGoogleMain = document.getElementById("btnGoogleMain");
+  const loginEmail = document.getElementById("loginEmail");
+  const loginPassword = document.getElementById("loginPassword");
+
+  // Guest Click
+  if (btnGuestMain) {
+    btnGuestMain.addEventListener('click', () => {
+      localStorage.setItem('mcuVisited', 'true');
+      loginScreen.style.display = "none";
+      
+      // Update UI for Guest
+      const authUserBox = document.getElementById("authUserBox");
+      const authUserName = document.getElementById("authUserName");
+      const authAvatar = document.getElementById("authAvatar");
+      const authOpenBtn = document.getElementById("authOpenBtn");
+      
+      if (authUserBox) authUserBox.style.display = "flex";
+      if (authOpenBtn) authOpenBtn.style.display = "none";
+      if (authUserName) authUserName.textContent = "Guest";
+      if (authAvatar) authAvatar.textContent = "G";
+      
+      window.showToast("✓ Entered as Guest. Progress saves locally.", "ok");
+    });
+  }
+
+  // Email Login Click (From Full Screen)
+  if (btnLoginMain) {
+    btnLoginMain.addEventListener('click', () => {
+      const email = loginEmail.value.trim();
+      const password = loginPassword.value;
+      
+      if (!email || !password) {
+        alert("Please enter email and password.");
+        return;
+      }
+      
+      // Trigger Auth.js login by filling modal and submitting
+      document.getElementById('authEmail').value = email;
+      document.getElementById('authPassword').value = password;
+      document.getElementById('authForm').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+      
+      localStorage.setItem('mcuVisited', 'true');
+      loginScreen.style.display = "none";
+    });
+  }
+
+  // Google Login Click (From Full Screen)
+  if (btnGoogleMain) {
+    btnGoogleMain.addEventListener('click', () => {
+      const googleModalBtn = document.getElementById("googleBtn");
+      if (googleModalBtn) googleModalBtn.click();
+      localStorage.setItem('mcuVisited', 'true');
+      loginScreen.style.display = "none";
     });
   }
 });
-
-// Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => console.log('✅ Service Worker registered:', registration.scope))
-      .catch(error => console.log('❌ Service Worker registration failed:', error));
-  });
-}
-
-// Recommended Next UI
-document.addEventListener('tracker-updated', () => {
-  if (window.updateRecommendedNextUI) window.updateRecommendedNextUI();
-});
-
-function updateRecommendedNextUI() {
-  const titleEl = document.getElementById('v3NextTitle');
-  const metaEl = document.getElementById('v3NextMeta');
-  const posterEl = document.getElementById('v3NextPoster');
-  const movieBox = document.getElementById('v3NextMovie');
-
-  if (!titleEl) return;
-
-  let allMovies = window.__mcuMovies || [];
-  let watched = window.__mcuWatched || JSON.parse(localStorage.getItem('mcuWatched')) || {};
-  let dropped = window.__mcuDropped || JSON.parse(localStorage.getItem('mcuDropped')) || {};
-
-  if (!allMovies || allMovies.length === 0) {
-    titleEl.textContent = "Loading...";
-    return;
-  }
-
-  // Drop ki hui movies ko chhod kar next movie dhoondho
-  const nextMovie = allMovies.find(m => !watched[m.id] && !dropped[m.id]);
-
-  if (nextMovie) {
-    titleEl.textContent = nextMovie.title || "Unknown Title";
-    metaEl.textContent = `${nextMovie.phase || 'Phase ?'} • ${nextMovie.year || 'TBA'}`;
-    
-    if (posterEl) {
-      if (nextMovie.poster) {
-        posterEl.src = nextMovie.poster;
-        posterEl.style.display = 'block';
-      } else {
-        posterEl.style.display = 'none';
-      }
-      posterEl.onerror = () => { posterEl.style.display = 'none'; };
-    }
-    
-    if (movieBox && window.openMovieModal) {
-      movieBox.onclick = () => window.openMovieModal(nextMovie);
-    }
-  } else {
-    titleEl.textContent = "All Caught Up! 🎉";
-    metaEl.textContent = "You have watched all movies.";
-    if (posterEl) posterEl.style.display = 'none';
-  }
-}
 </script>
 </body>
 </html>
