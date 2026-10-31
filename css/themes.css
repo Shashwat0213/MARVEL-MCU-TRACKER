@@ -1,293 +1,179 @@
 /* ═══════════════════════════════════════════════════════════
-   MCU TRACKER — THEMES (VARIABLE-ONLY, LAYOUT-SAFE)
-   Sirf colors change, layout kabhi nahi
+   MCU TRACKER — PREMIUM MARVEL THEMES (VARIABLE-ONLY)
    ═══════════════════════════════════════════════════════════ */
 
-/* Default (Cosmos) */
-:root, body.theme-cosmos {
-  --primary: #00e5ff;
-  --secondary: #0077ff;
-  --premium-accent: #27a7ff;
-  --premium-accent2: #a7e8ff;
-  --premium-glow: rgba(39, 167, 255, 0.28);
-  --bg: #05070d;
-  --bg-2: #0a0e17;
-  --card: #0d1422;
-  --card-2: #111b2f;
+/* 1. STARK TECH (Iron Man / Default) */
+:root, body.theme-stark {
+  --primary: #fbbf24;
+  --secondary: #ef4444;
+  --premium-accent: #fbbf24;
+  --premium-accent2: #fcd34d;
+  --premium-glow: rgba(251, 191, 36, 0.3);
+  --bg: #090a0f;
+  --bg-2: #12141d;
+  --card: #151822;
+  --card-2: #1a1e2b;
   --text: #ffffff;
-  --text-dim: #9db4d1;
-  --muted: #9db4d1;
-  --border: #18345b;
-  --grid-line: rgba(0, 229, 255, 0.035);
-  --gold: #ffd54a;
-  --success: #00e676;
-  --danger: #ff1744;
+  --text-dim: #9ca3af;
+  --muted: #9ca3af;
+  --border: #334155;
+  --grid-line: rgba(251, 191, 36, 0.05);
+  --gold: #fbbf24;
+  --success: #10b981;
+  --danger: #ef4444;
 }
 
-/* Arc Reactor */
-body.theme-arcreactor {
-  --primary: #22d3ee;
-  --secondary: #0891b2;
-  --premium-accent: #22d3ee;
-  --premium-accent2: #67e8f9;
-  --premium-glow: rgba(34, 211, 238, 0.28);
-  --bg: #061018;
-  --bg-2: #0c1a26;
-  --card: #0c1a26;
-  --card-2: #122636;
-  --text: #e0f7ff;
-  --text-dim: #7dd3fc;
-  --muted: #7dd3fc;
-  --border: #155e75;
-  --grid-line: rgba(34, 211, 238, 0.035);
+/* 2. ASGARD (Thor) */
+body.theme-asgard {
+  --primary: #38bdf8;
+  --secondary: #818cf8;
+  --premium-accent: #38bdf8;
+  --premium-accent2: #7dd3fc;
+  --premium-glow: rgba(56, 189, 248, 0.3);
+  --bg: #080f1a;
+  --bg-2: #0f172a;
+  --card: #121e36;
+  --card-2: #1e293b;
+  --text: #f8fafc;
+  --text-dim: #94a3b8;
+  --muted: #94a3b8;
+  --border: #334155;
+  --grid-line: rgba(56, 189, 248, 0.05);
+  --gold: #fbbf24;
+  --success: #10b981;
+  --danger: #ef4444;
 }
 
-/* Inferno */
-body.theme-inferno {
+/* 3. HULK SMASH */
+body.theme-hulk {
+  --primary: #22c55e;
+  --secondary: #854d0e;
+  --premium-accent: #22c55e;
+  --premium-accent2: #4ade80;
+  --premium-glow: rgba(34, 197, 94, 0.3);
+  --bg: #061308;
+  --bg-2: #0a1f0e;
+  --card: #0e2a14;
+  --card-2: #143a1c;
+  --text: #dcfce7;
+  --text-dim: #86efac;
+  --muted: #86efac;
+  --border: #166534;
+  --grid-line: rgba(34, 197, 94, 0.05);
+  --gold: #fbbf24;
+  --success: #10b981;
+  --danger: #ef4444;
+}
+
+/* 4. WAKANDA FOREVER */
+body.theme-wakanda {
+  --primary: #a855f7;
+  --secondary: #f59e0b;
+  --premium-accent: #a855f7;
+  --premium-accent2: #c084fc;
+  --premium-glow: rgba(168, 85, 247, 0.3);
+  --bg: #0f0817;
+  --bg-2: #1a0f29;
+  --card: #23143a;
+  --card-2: #2e1b4a;
+  --text: #f3e8ff;
+  --text-dim: #d8b4fe;
+  --muted: #d8b4fe;
+  --border: #581c87;
+  --grid-line: rgba(168, 85, 247, 0.05);
+  --gold: #fbbf24;
+  --success: #10b981;
+  --danger: #ef4444;
+}
+
+/* 5. SANCTUM (Doctor Strange) */
+body.theme-sanctum {
+  --primary: #f43f5e;
+  --secondary: #8b5cf6;
+  --premium-accent: #f43f5e;
+  --premium-accent2: #fb7185;
+  --premium-glow: rgba(244, 63, 94, 0.3);
+  --bg: #11040a;
+  --bg-2: #1c0a13;
+  --card: #26101b;
+  --card-2: #331624;
+  --text: #ffe4e6;
+  --text-dim: #fda4af;
+  --muted: #fda4af;
+  --border: #881337;
+  --grid-line: rgba(244, 63, 94, 0.05);
+  --gold: #fbbf24;
+  --success: #10b981;
+  --danger: #ef4444;
+}
+
+/* 6. DOOMSDAY (Avengers 5) */
+body.theme-doomsday {
+  --primary: #64748b;
+  --secondary: #84cc16;
+  --premium-accent: #84cc16;
+  --premium-accent2: #a3e635;
+  --premium-glow: rgba(132, 204, 22, 0.3);
+  --bg: #080a08;
+  --bg-2: #0f140f;
+  --card: #141a14;
+  --card-2: #1a241a;
+  --text: #f1f5f9;
+  --text-dim: #94a3b8;
+  --muted: #94a3b8;
+  --border: #334155;
+  --grid-line: rgba(132, 204, 22, 0.05);
+  --gold: #a3e635;
+  --success: #10b981;
+  --danger: #ef4444;
+}
+
+/* 7. SPIDER-VERSE */
+body.theme-spiderverse {
   --primary: #ef4444;
-  --secondary: #f97316;
+  --secondary: #3b82f6;
   --premium-accent: #ef4444;
-  --premium-accent2: #fbbf24;
-  --premium-glow: rgba(239, 68, 68, 0.28);
-  --bg: #1a0808;
-  --bg-2: #2a0e0e;
-  --card: #2a0e0e;
-  --card-2: #3a1414;
+  --premium-accent2: #f87171;
+  --premium-glow: rgba(239, 68, 68, 0.3);
+  --bg: #0f0202;
+  --bg-2: #1a0505;
+  --card: #260a0a;
+  --card-2: #331010;
   --text: #fee2e2;
   --text-dim: #fca5a5;
   --muted: #fca5a5;
   --border: #7f1d1d;
-  --grid-line: rgba(239, 68, 68, 0.035);
+  --grid-line: rgba(239, 68, 68, 0.05);
+  --gold: #fbbf24;
+  --success: #10b981;
+  --danger: #ef4444;
 }
 
-/* Vibranium */
-body.theme-vibranium {
-  --primary: #a855f7;
-  --secondary: #2dd4bf;
-  --premium-accent: #a855f7;
-  --premium-accent2: #5eead4;
-  --premium-glow: rgba(168, 85, 247, 0.28);
-  --bg: #0a0a1a;
-  --bg-2: #15152e;
-  --card: #15152e;
-  --card-2: #202040;
-  --text: #ede9fe;
-  --text-dim: #c4b5fd;
-  --muted: #c4b5fd;
-  --border: #4c1d95;
-  --grid-line: rgba(168, 85, 247, 0.035);
-}
-
-/* Bifrost */
-body.theme-bifrost {
-  --primary: #3b82f6;
-  --secondary: #06b6d4;
-  --premium-accent: #3b82f6;
-  --premium-accent2: #67e8f9;
-  --premium-glow: rgba(59, 130, 246, 0.28);
-  --bg: #04101e;
-  --bg-2: #0a1e30;
-  --card: #0a1e30;
-  --card-2: #102c44;
-  --text: #dbeafe;
-  --text-dim: #93c5fd;
-  --muted: #93c5fd;
-  --border: #1e40af;
-  --grid-line: rgba(59, 130, 246, 0.035);
-}
-
-/* Doomsday */
-body.theme-doomsday {
-  --primary: #22c55e;
-  --secondary: #84cc16;
-  --premium-accent: #22c55e;
-  --premium-accent2: #a3e635;
-  --premium-glow: rgba(34, 197, 94, 0.28);
-  --bg: #051a0a;
-  --bg-2: #0a2a12;
-  --card: #0a2a12;
-  --card-2: #103a1a;
-  --text: #dcfce7;
-  --text-dim: #86efac;
-  --muted: #86efac;
-  --border: #14532d;
-  --grid-line: rgba(34, 197, 94, 0.035);
-}
-
-/* Noir */
-body.theme-noir {
-  --primary: #e5e7eb;
-  --secondary: #22d3ee;
-  --premium-accent: #e5e7eb;
-  --premium-accent2: #67e8f9;
-  --premium-glow: rgba(255, 255, 255, 0.18);
-  --bg: #000000;
-  --bg-2: #0a0a0a;
-  --card: #0a0a0a;
-  --card-2: #141414;
-  --text: #f5f5f5;
-  --text-dim: #a3a3a3;
-  --muted: #a3a3a3;
-  --border: #262626;
-  --grid-line: rgba(255, 255, 255, 0.035);
-}
-
-/* Light Mode */
+/* LIGHT MODE (Safely overrides all themes) */
 body.light-mode {
-  --bg: #edf4ff;
+  --bg: #f8fafc;
   --bg-2: #ffffff;
   --card: #ffffff;
-  --card-2: #f2f7ff;
-  --text: #111827;
-  --text-dim: #52627a;
-  --muted: #52627a;
-  --border: #b9cee9;
-  --grid-line: rgba(0, 100, 200, 0.06);
-  --primary: #0066cc;
-  --secondary: #0055aa;
-  --premium-accent: #0066cc;
-  --premium-accent2: #0099ff;
-  --premium-glow: rgba(0, 102, 204, 0.3);
-  background-color: #edf4ff;
-  color: #111827;
+  --card-2: #f1f5f9;
+  --text: #0f172a;
+  --text-dim: #475569;
+  --muted: #475569;
+  --border: #cbd5e1;
+  --grid-line: rgba(0, 0, 0, 0.05);
+  --primary: #0284c7;
+  --secondary: #2563eb;
+  --premium-accent: #0284c7;
+  --premium-accent2: #38bdf8;
+  --premium-glow: rgba(2, 132, 199, 0.2);
+  background-color: #f8fafc;
+  color: #0f172a;
 }
 
-body.light-mode::before {
-  opacity: 0.08;
-  filter: brightness(1.5) saturate(0.5);
-}
-
-body.light-mode::after {
-  background-image:
-    radial-gradient(circle at 50% 0%, rgba(255,255,255,.6) 0%, transparent 60%),
-    linear-gradient(180deg, rgba(255,255,255,.3) 0%, rgba(200,220,255,.4) 100%);
-}
-
-body.light-mode header,
-body.light-mode .site-header {
-  background-color: rgba(237, 244, 255, 0.92);
-  border-color: var(--border);
-}
-
-body.light-mode .panel,
-body.light-mode .movie-card,
-body.light-mode .stat-card,
-body.light-mode .v3-card,
-body.light-mode .admin-card,
-body.light-mode .auth-card {
-  background-image: linear-gradient(145deg, #ffffff, #f2f7ff);
-  border-color: var(--border);
-}
-
-body.light-mode .movie-title,
-body.light-mode .stat-number,
-body.light-mode .hero-title,
-body.light-mode .v3-greeting h2,
-body.light-mode .admin-brand h2 {
-  color: #111827;
-}
-
-body.light-mode p,
-body.light-mode label,
-body.light-mode small,
-body.light-mode footer,
-body.light-mode .hero-copy,
-body.light-mode .stat-label,
-body.light-mode .meta-item {
-  color: #111827;
-}
-
-body.light-mode .muted,
-body.light-mode .stat-label,
-body.light-mode .meta-item,
-body.light-mode .hero-copy {
-  color: #52627a;
-}
-
-body.light-mode input,
-body.light-mode select,
-body.light-mode textarea {
-  background-color: #ffffff;
-  color: #111827;
-  border-color: #b9cee9;
-}
-
-body.light-mode input::placeholder {
-  color: #8a99b0;
-}
-
-body.light-mode .search-box input {
-  background-color: #ffffff;
-  color: #111827;
-  border-color: #b9cee9;
-}
-
-body.light-mode .meta-item {
-  background-color: #edf4ff;
-  border-color: #c6d8ed;
-}
-
-body.light-mode .filter-btn {
-  background-color: #ffffff;
-  color: #52627a;
-  border-color: #b9cee9;
-}
-
-body.light-mode .filter-btn.active {
-  background-image: linear-gradient(135deg, #0066cc, #0055aa);
-  color: #fff;
-}
-
-body.light-mode .theme-choice {
-  background-color: rgba(255,255,255,.7);
-  color: #111827;
-  border-color: #b9cee9;
-}
-
-body.light-mode .theme-choice.active {
-  background-color: var(--premium-accent);
-  color: #fff;
-}
-
-body.light-mode .premium-hero,
-body.light-mode .premium-hero .hero-kicker,
-body.light-mode .premium-hero .hero-copy,
-body.light-mode .premium-hero .hero-title {
-  color: #ffffff;
-}
-
-body.light-mode .admin-panel {
-  background-color: #edf4ff;
-}
-
-body.light-mode .admin-tabs {
-  background-color: #ffffff;
-  border-color: #b9cee9;
-}
-
-body.light-mode .admin-tab {
-  color: #52627a;
-}
-
-body.light-mode .admin-tab.active {
-  background-color: #0066cc;
-  color: #ffffff;
-}
-
-body.light-mode .progress {
-  background-color: #e0ecff;
-  border-color: #b9cee9;
-}
-
-body.light-mode .v3-mini-stat {
-  background-color: rgba(0, 102, 204, 0.06);
-  border-color: #c6d8ed;
-}
-
-body.light-mode .v3-mini-stat strong {
-  color: #0066cc;
-}
-
-body.light-mode .v3-progress-track {
-  background-color: #e0ecff;
-} 
+body.light-mode::before { opacity: 0.03; filter: invert(1); }
+body.light-mode .panel { background: #ffffff; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+body.light-mode .movie-card { background: #ffffff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+body.light-mode .movie-title { color: #0f172a; }
+body.light-mode .meta-item { background: #f1f5f9; border-color: #cbd5e1; color: #475569; }
+body.light-mode .search-box input { background: #f1f5f9; color: #0f172a; border-color: #cbd5e1; }
+body.light-mode .auth-card { background: #ffffff; border-color: #cbd5e1; }
+body.light-mode .auth-field input { background: #f1f5f9; color: #0f172a; border-color: #cbd5e1; }
