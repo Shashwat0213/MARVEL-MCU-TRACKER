@@ -222,7 +222,7 @@
         </div>
     </section>
 
-    <main class="panel">
+    <main class="panel" id="movieCatalog">
         <div class="search-box">
             <span class="search-icon">🔍</span>
             <input type="text" id="search" placeholder="Search MCU movie..." autocomplete="off">
@@ -317,7 +317,6 @@
         </div>
 
         <div class="admin-pane" data-admin-pane="add">
-            <!-- ⚡ TMDB Key input box has been REMOVED ⚡ -->
             <div class="admin-card tmdb-card">
                 <h3>🔍 TMDB Auto-Fill</h3>
                 <div class="tmdb-search-row">
@@ -478,6 +477,18 @@ function updateRecommendedNextUI() {
     if (posterEl) posterEl.style.display = 'none';
   }
 }
+
+// ═══════════ EXPLORE MOVIES BUTTON FIX ═══════════
+document.addEventListener('DOMContentLoaded', () => {
+  const exploreBtn = document.getElementById('heroExploreBtn');
+  const movieCatalog = document.getElementById('movieCatalog');
+
+  if (exploreBtn && movieCatalog) {
+    exploreBtn.addEventListener('click', () => {
+      movieCatalog.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+});
 </script>
 </body>
 </html>
