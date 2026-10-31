@@ -68,21 +68,21 @@
 .auth-divider { display: flex; align-items: center; color: #6f87a5; margin: 15px 0; font-size: 0.8rem; }
 .auth-divider::before, .auth-divider::after { content: ""; flex: 1; border-bottom: 1px solid #18345b; margin: 0 10px; }
 
-/* ═══════════ NEW CLEAN HEADER (NO BOX) ═══════════ */
+/* ═══════════ HEADER (SAME AS ORIGINAL) ═══════════ */
 header {
-  display: flex; flex-direction: column; gap: 15px;
-  padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
-  margin-bottom: 25px;
+  display: flex; flex-direction: column; align-items: center; gap: 15px;
+  padding: 20px; margin-bottom: 25px; text-align: center;
 }
-.header-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-.header-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.logo { display: flex; flex-direction: column; font-size: 2rem; font-weight: 900; color: var(--primary); text-shadow: 0 0 15px var(--primary); line-height: 1.1; margin: 0; }
+.powered { font-size: 0.65rem; letter-spacing: 5px; color: var(--primary); opacity: 0.8; margin-top: 5px; }
 
-.logo { display: flex; flex-direction: column; font-size: 1.8rem; font-weight: 900; letter-spacing: 2px; color: var(--primary); text-shadow: 0 0 15px var(--primary); line-height: 1.1; }
-.powered { font-size: 0.6rem; letter-spacing: 6px; color: var(--primary); opacity: 0.8; margin-top: 5px; }
-
-.topbar, .auth-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.header-buttons-box {
+  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+  background: rgba(13, 20, 34, 0.7); padding: 10px 15px; border-radius: 16px;
+  border: 1px solid var(--border); backdrop-filter: blur(10px);
+}
 .top-btn, .reset-btn, .auth-login-btn, .auth-logout-btn, .auth-admin-btn {
-  padding: 8px 14px; border-radius: 10px; font-size: 0.75rem; font-weight: 700;
+  padding: 10px 15px; border-radius: 10px; font-size: 0.75rem; font-weight: 700;
   border: 1px solid var(--border); transition: all 0.2s ease;
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   cursor: pointer; background: rgba(255,255,255,0.05); color: var(--text);
@@ -95,8 +95,7 @@ header {
 #installBtn { background: #10b981; color: #fff; border: none; }
 #feedbackBtn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); }
 
-/* Drop Button & Theme Switcher */
-.theme-switcher { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; align-items: center; }
+.theme-switcher { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; align-items: center; justify-content: center; }
 .theme-label { font-size: 0.75rem; color: var(--muted); font-weight: 700; margin-right: 5px; }
 .theme-choice { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 10px; color: #9db4d1; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: all 0.2s ease; }
 .theme-choice.active { border-color: var(--primary); color: var(--primary); background: rgba(0, 229, 255, 0.1); }
@@ -104,7 +103,6 @@ header {
 .drop-btn:hover { transform: scale(1.12); background: rgba(255,61,0,.8); }
 .drop-btn.active { color: #ff3d00; text-shadow: 0 0 10px #ff3d00; }
 
-/* Feedback Modal */
 #feedbackModal { position: fixed; inset: 0; z-index: 100000; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
 .feedback-box { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 25px; width: 100%; max-width: 400px; }
 .feedback-box h2 { color: #fff; margin-bottom: 15px; font-family: Orbitron; }
@@ -155,32 +153,60 @@ header {
 <div class="bg-layer"></div>
 
 <div class="container">
-    <!-- NAYA CLEAN HEADER -->
+    <!-- ORIGINAL HEADER DESIGN -->
     <header>
-        <div class="header-top">
-            <h1 class="logo">⚡ MARVEL MCU TRACKER <span class="powered">POWERED BY SHASHWAT</span></h1>
-            
-            <div class="topbar">
-                <button class="top-btn" id="themeBtn">🌙 Dark</button>
-                <button class="top-btn" id="soundBtn">🔊 Sound</button>
-                <button class="top-btn" id="installBtn" style="display:none; background: #10b981; color: #fff;">⬇️ Install App</button>
-                <button class="reset-btn" id="resetBtn">🔄 Reset</button>
-            </div>
-        </div>
+        <h1 class="logo">⚡ MARVEL MCU TRACKER <span class="powered">POWERED BY SHASHWAT</span></h1>
         
-        <div class="header-bottom" style="border-top: 1px solid var(--border); padding-top: 12px;">
-            <div class="auth-bar" id="authBar">
-                <div class="auth-user" id="authUserBox" style="display: none;">
-                    <span class="auth-avatar" id="authAvatar">S</span>
-                    <strong id="authUserName">Guest</strong>
-                    <button class="auth-logout-btn" id="authLogoutBtn">Logout</button>
-                    <button class="auth-admin-btn" id="authAdminBtn" style="display:none">🛡️ Admin</button>
-                </div>
-                <button class="auth-login-btn" id="authOpenBtn">👤 Login</button>
-                <button class="auth-logout-btn" id="feedbackBtn" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border);">💬 Feedback</button>
-            </div>
+        <div class="header-buttons-box">
+            <button class="top-btn" id="themeBtn">🌙 Dark</button>
+            <button class="top-btn" id="soundBtn">🔊 Sound</button>
+            <button class="top-btn" id="installBtn" style="display:none; background: #10b981; color: #fff;">⬇️ Install App</button>
+            <button class="reset-btn" id="resetBtn">🔄 Reset</button>
         </div>
-    </header>    <!-- Hero Section -->
+
+        <div class="header-buttons-box" id="authBar" style="margin-top: 10px;">
+            <div class="auth-user" id="authUserBox" style="display: none; align-items: center; gap: 8px;">
+                <span class="auth-avatar" id="authAvatar">S</span>
+                <strong id="authUserName">Guest</strong>
+                <button class="auth-logout-btn" id="authLogoutBtn">Logout</button>
+                <button class="auth-admin-btn" id="authAdminBtn" style="display:none">🛡️ Admin</button>
+            </div>
+            <button class="auth-login-btn" id="authOpenBtn">👤 Login</button>
+            <button class="auth-logout-btn" id="feedbackBtn">💬 Feedback</button>
+        </div>
+    </header>
+    <!-- Hidden Auth Modal -->
+    <div class="auth-overlay" id="authOverlay" aria-hidden="true">
+        <section class="auth-card" role="dialog" aria-modal="true">
+            <button class="auth-close" id="authCloseBtn" aria-label="Close">×</button>
+            <div class="auth-brand">⚡ MCU TRACKER ACCOUNT</div>
+            <h2 id="authTitle">Welcome back</h2>
+            <p id="authSubtitle">Sign in to keep your MCU journey tied to your account.</p>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-auth-tab="login">Login</button>
+                <button class="auth-tab" data-auth-tab="signup">Create account</button>
+            </div>
+            <form class="auth-form" id="authForm">
+                <div class="auth-field" id="authNameField" style="display:none">
+                    <label for="authName">Display name</label>
+                    <input id="authName" maxlength="24" autocomplete="name" placeholder="Your name">
+                </div>
+                <div class="auth-field">
+                    <label for="authEmail">Email</label>
+                    <input id="authEmail" type="email" autocomplete="email" required placeholder="you@example.com">
+                </div>
+                <div class="auth-field">
+                    <label for="authPassword">Password</label>
+                    <input id="authPassword" type="password" minlength="6" autocomplete="current-password" required placeholder="Minimum 6 characters">
+                </div>
+                <div class="auth-message" id="authMessage"></div>
+                <button class="auth-submit" id="authSubmit" type="submit">Login</button>
+                <button type="button" id="googleBtn" class="auth-logout-btn" style="width:100%;margin-top:8px">Continue with Google</button>
+            </form>
+        </section>
+    </div>
+
+    <!-- Hero Section -->
     <section class="premium-hero" aria-label="Premium MCU dashboard">
         <div class="hero-kicker">Marvel Inspired • Personal Watch Tracker</div>
         <h2 class="hero-title">Your MCU. Your Timeline.</h2>
@@ -342,7 +368,6 @@ header {
     <button id="closeFeedbackBtn" style="background: transparent; color: #fff; border: 1px solid #333; margin-top: 10px;">Cancel</button>
   </div>
 </div>
-
 <!-- Admin Panel -->
 <section class="admin-panel" id="adminPanel" aria-hidden="true">
     <div class="admin-inner">
@@ -475,7 +500,7 @@ header {
 <script>
 // ═══════════ WELCOME LOGIN PAGE & GUEST LOGIC ═══════════
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Hide Loader after 3 seconds and show Login Screen
+  // 1. Hide Loader after 3 seconds and show Login Screen (if first time)
   setTimeout(() => {
     const loader = document.getElementById("mcuLoader");
     if (loader) loader.classList.add("hidden");
@@ -486,7 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, 2800);
 
-  // 2. Login Screen Buttons
+  // 2. Login Screen Buttons (Full Screen)
   const loginScreen = document.getElementById("loginScreen");
   const btnGuestMain = document.getElementById("btnGuestMain");
   const btnLoginMain = document.getElementById("btnLoginMain");
@@ -520,6 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const password = loginPassword.value;
       if (!email || !password) { alert("Please enter email and password."); return; }
       
+      // Fill hidden modal and submit
       document.getElementById('authEmail').value = email;
       document.getElementById('authPassword').value = password;
       document.getElementById('authForm').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
@@ -589,13 +615,13 @@ document.addEventListener('DOMContentLoaded', () => {
           console.error("Database save failed:", dbError);
         }
 
-        // 2. Email bhejo (Web3Forms)
+        // 2. Email bhejo (Web3Forms ke through)
         try {
           const response = await fetch("https://api.web3forms.com/submit", {
             method: "POST",
             headers: { "Content-Type": "application/json", "Accept": "application/json" },
             body: JSON.stringify({
-              access_key: "YAHAN_APNI_ACCESS_KEY_DALO", // ⚡ Key yahan daalo
+              access_key: "YAHAN_APNI_ACCESS_KEY_DALO", // ⚡ Yahan Web3Forms ki key daalo
               subject: "⚡ New MCU Tracker Feedback Received",
               from_name: "MCU Tracker",
               user_email: window.__mcuUser ? window.__mcuUser.email : "Guest",
@@ -609,7 +635,7 @@ document.addEventListener('DOMContentLoaded', () => {
           console.error("Email network error:", emailError);
         }
 
-        // 3. Result
+        // 3. Result dikhao
         if (isSavedInDB || isEmailSent) {
           alert("✅ Feedback sent successfully!");
           document.getElementById('feedbackText').value = "";
@@ -617,12 +643,26 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           alert("❌ Failed to send feedback. Please try again.");
         }
+
       } catch (e) {
         console.error("General Error:", e);
         alert("Something went wrong. Please try again.");
       } finally {
         submitFeedbackBtn.textContent = "Submit Feedback";
         submitFeedbackBtn.disabled = false;
+      }
+    });
+  }
+
+  // 5. Login Button in Header (Trigger Hidden Modal)
+  const authOpenBtn = document.getElementById("authOpenBtn");
+  if (authOpenBtn) {
+    authOpenBtn.addEventListener("click", () => {
+      const authOverlay = document.getElementById("authOverlay");
+      if (authOverlay) {
+        authOverlay.classList.add("open");
+        authOverlay.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
       }
     });
   }
@@ -655,22 +695,6 @@ if (installBtn) {
 window.addEventListener('appinstalled', () => {
   if (installBtn) installBtn.style.display = 'none';
   console.log('✅ MCU Tracker PWA installed successfully!');
-});
-
-// ═══════════ LOGIN MODAL TRIGGER (for header button) ═══════════
-// Yeh ensure karega ki "Login" button dabane par auth.js wala modal khule
-document.addEventListener('DOMContentLoaded', () => {
-  const authOpenBtn = document.getElementById("authOpenBtn");
-  if (authOpenBtn) {
-    authOpenBtn.addEventListener("click", () => {
-      const authOverlay = document.getElementById("authOverlay");
-      if (authOverlay) {
-        authOverlay.classList.add("open");
-        authOverlay.setAttribute("aria-hidden", "false");
-        document.body.style.overflow = "hidden";
-      }
-    });
-  }
 });
 </script>
 
