@@ -11,7 +11,7 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "IMG-20261101-WA0430.jpg",
+      "src": "IMG-20261101-WA3540.jpg",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
@@ -29,7 +29,7 @@
       "purpose": "any"
     },
     {
-      "src": "IMG-20261101-WA0430.jpg",
+      "src": "IMG-20261101-WA3540.jpg",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
