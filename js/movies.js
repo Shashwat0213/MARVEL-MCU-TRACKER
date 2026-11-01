@@ -44,6 +44,12 @@ if (!db) {
   }
 
   /* ═══════════ FILTER + SORT + SEARCH ═══════════ */
+  function compareStoryOrder(a, b) {
+    const sa = Number.isFinite(Number(a.timelineSlot)) ? Number(a.timelineSlot) : 9999;
+    const sb = Number.isFinite(Number(b.timelineSlot)) ? Number(b.timelineSlot) : 9999;
+    return sa - sb || (a.title || "").localeCompare(b.title || "");
+  }
+
   function getFilteredMovies() {
     let result = [...allMovies];
 
@@ -89,11 +95,7 @@ if (!db) {
         break;
       case "default":
       default:
-        result.sort((a, b) => {
-          const sa = Number.isFinite(Number(a.timelineSlot)) ? Number(a.timelineSlot) : 9999;
-          const sb = Number.isFinite(Number(b.timelineSlot)) ? Number(b.timelineSlot) : 9999;
-          return sa - sb || (a.title || "").localeCompare(b.title || "");
-        });
+        result.sort(compareStoryOrder);
         break;
     }
 
@@ -243,6 +245,53 @@ if (!db) {
     setText("v3ProgressText", percent + "%");
     const v3ProgressFill = $("v3ProgressFill");
     if (v3ProgressFill) v3ProgressFill.style.width = percent + "%";
+
+    updateNextUp();
+  }
+
+  /* ═══════════ RECOMMENDED NEXT ═══════════ */
+  function updateNextUp() {
+    const titleEl = $("v3NextTitle");
+    if (!titleEl) return;
+    const metaEl = $("v3NextMeta");
+    const posterEl = $("v3NextPoster");
+
+    const watched = window.__mcuWatched || {};
+    const dropped = window.__mcuDropped || {};
+
+    const hidePoster = () => { if (posterEl) posterEl.style.display = "none"; };
+
+    if (allMovies.length === 0) {
+      titleEl.textContent = "No movies yet";
+      if (metaEl) metaEl.textContent = "Check back soon";
+      hidePoster();
+      return;
+    }
+
+    const next = [...allMovies]
+      .sort(compareStoryOrder)
+      .find(m => !watched[m.id] && !dropped[m.id]);
+
+    if (!next) {
+      titleEl.textContent = "All caught up 🎉";
+      if (metaEl) metaEl.textContent = "You've finished everything on your list";
+      hidePoster();
+      return;
+    }
+
+    titleEl.textContent = next.title || next.id;
+    if (metaEl) {
+      const year = next.releaseDate ? String(next.releaseDate).slice(0, 4) : (next.year || "");
+      metaEl.textContent = [next.phase, year].filter(Boolean).join(" • ") || "Your next unwatched movie";
+    }
+    if (posterEl) {
+      if (next.poster) {
+        posterEl.style.display = "";
+        if (posterEl.getAttribute("src") !== next.poster) posterEl.src = next.poster;
+      } else {
+        hidePoster();
+      }
+    }
   }
 
   /* ═══════════ TOOLBAR ═══════════ */
