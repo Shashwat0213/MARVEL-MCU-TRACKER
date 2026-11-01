@@ -19,8 +19,15 @@ if (!auth || !db) {
   /* ═══════════ STATE ═══════════ */
   let watched = {};
   let favorites = {};
-  let dropped = {}; // ✅ Naya State Add Kiya
+  let dropped = {};
   let saveTimer = null;
+
+  // Which account the data in localStorage belongs to.
+  // "" = guest / not tied to an account, otherwise the account's uid.
+  const OWNER_KEY = "mcuLocalOwner";
+  let cloudReadyUid = null; // uid whose cloud data is loaded (saving is safe)
+  let loadingUid = null;    // uid currently being loaded (avoids duplicate loads)
+  let wasSignedIn = false;  // true only after a real sign-in (not on page load)
 
   // Load local state (works offline & for guests)
   try {
@@ -35,7 +42,30 @@ if (!auth || !db) {
 
   window.__mcuWatched = watched;
   window.__mcuFavorites = favorites;
-  window.__mcuDropped = dropped; // ✅ Expose globally
+  window.__mcuDropped = dropped;
+
+  /* Replace the contents IN PLACE so every reference to these objects
+     (window.__mcu*, open modals) always sees the current data. */
+  function replaceState(w, f, d) {
+    [[watched, w], [favorites, f], [dropped, d]].forEach(([target, src]) => {
+      Object.keys(target).forEach(k => delete target[k]);
+      Object.assign(target, src || {});
+    });
+  }
+
+  function isLocalEmpty() {
+    return !Object.keys(watched).length &&
+           !Object.keys(favorites).length &&
+           !Object.keys(dropped).length;
+  }
+
+  function getOwner() {
+    try { return localStorage.getItem(OWNER_KEY) || ""; } catch (e) { return ""; }
+  }
+
+  function setOwner(uid) {
+    try { localStorage.setItem(OWNER_KEY, uid || ""); } catch (e) {}
+  }
 
   /* ═══════════ LOCAL SAVE ═══════════ */
   function saveLocal() {
@@ -53,14 +83,23 @@ if (!auth || !db) {
     const user = auth.currentUser;
     if (!user) return; // Guest user ka data cloud me nahi jayega
 
+    // Never write before this account's cloud data has been loaded —
+    // otherwise stale local data could overwrite the cloud copy.
+    if (cloudReadyUid !== user.uid) {
+      if (loadingUid !== user.uid) loadCloud();
+      return;
+    }
+
     try {
       const ref = doc(db, "users", user.uid, "private", "tracker");
+      // NOTE: no { merge: true } here. Merge deep-merges maps, so removed
+      // keys (unwatched / unfavorited / un-dropped) would stay in the cloud.
       await setDoc(ref, {
         watched,
         favorites,
         dropped,
         updatedAt: serverTimestamp()
-      }, { merge: true });
+      });
 
       if (window.setSyncStatus) window.setSyncStatus("synced", "ok");
     } catch (e) {
@@ -80,30 +119,64 @@ if (!auth || !db) {
   async function loadCloud() {
     const user = auth.currentUser;
     if (!user) return;
+    const uid = user.uid;
+    if (cloudReadyUid === uid || loadingUid === uid) return; // already done / in progress
 
+    loadingUid = uid;
     try {
       if (window.setSyncStatus) window.setSyncStatus("loading…", "idle");
-      const ref = doc(db, "users", user.uid, "private", "tracker");
+      const ref = doc(db, "users", uid, "private", "tracker");
       const snap = await getDoc(ref);
+
+      // Account changed while loading — the new account's own login will load it
+      if (!auth.currentUser || auth.currentUser.uid !== uid) return;
+
+      const owner = getOwner();
+      const localIsGuest = owner === "";
+      const localIsOwn = owner === uid;
+
+      // Leftover data from a different account must never carry over
+      if (!localIsGuest && !localIsOwn) replaceState({}, {}, {});
+
+      let needsPush = false;
 
       if (snap.exists()) {
         const data = snap.data();
-        watched = data.watched || {};
-        favorites = data.favorites || {};
-        dropped = data.dropped || {};
-        window.__mcuWatched = watched;
-        window.__mcuFavorites = favorites;
-        window.__mcuDropped = dropped;
-        saveLocal();
-        if (window.setSyncStatus) window.setSyncStatus("synced", "ok");
-        document.dispatchEvent(new CustomEvent("tracker-updated"));
+        const cw = data.watched || {};
+        const cf = data.favorites || {};
+        const cd = data.dropped || {};
+
+        if (localIsGuest && !isLocalEmpty()) {
+          // Guest progress + account progress → keep both
+          const mw = { ...cw, ...watched };
+          const mf = { ...cf, ...favorites };
+          const md = { ...cd, ...dropped };
+          Object.keys(mw).forEach(k => { if (mw[k]) delete md[k]; }); // watched beats dropped
+          replaceState(mw, mf, md);
+          needsPush = true;
+        } else {
+          replaceState(cw, cf, cd);
+        }
       } else {
-        // First time logging in — save local state to cloud
-        await saveCloud();
+        // First time logging in — local (guest) state becomes the cloud state
+        needsPush = true;
       }
+
+      setOwner(uid);
+      saveLocal();
+      cloudReadyUid = uid;
+
+      if (needsPush) {
+        await saveCloud();
+      } else if (window.setSyncStatus) {
+        window.setSyncStatus("synced", "ok");
+      }
+      document.dispatchEvent(new CustomEvent("tracker-updated"));
     } catch (e) {
       console.error("Cloud load failed:", e);
       if (window.setSyncStatus) window.setSyncStatus("load failed", "error");
+    } finally {
+      if (loadingUid === uid) loadingUid = null;
     }
   }
 
@@ -157,12 +230,7 @@ if (!auth || !db) {
 
   function resetTracker() {
     if (!confirm("Reset all watched, favorites, and dropped? This cannot be undone.")) return;
-    watched = {};
-    favorites = {};
-    dropped = {};
-    window.__mcuWatched = watched;
-    window.__mcuFavorites = favorites;
-    window.__mcuDropped = dropped;
+    replaceState({}, {}, {});
     saveLocal();
     scheduleCloudSave();
     document.dispatchEvent(new CustomEvent("tracker-updated"));
@@ -175,12 +243,31 @@ if (!auth || !db) {
   window.toggleDropped = toggleDropped;
   window.resetTracker = resetTracker;
 
+  /* ═══════════ RESET BUTTON ═══════════ */
+  const resetBtn = document.getElementById("resetBtn");
+  if (resetBtn) resetBtn.addEventListener("click", resetTracker);
+
   /* ═══════════ EVENTS ═══════════ */
   document.addEventListener("user-logged-in", () => {
+    wasSignedIn = true;
     loadCloud();
   });
 
   document.addEventListener("user-logged-out", () => {
+    // This event also fires on every page load for signed-out visitors,
+    // so only treat it as a logout if someone was actually signed in.
+    cloudReadyUid = null;
+    loadingUid = null;
+    if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+
+    if (wasSignedIn) {
+      wasSignedIn = false;
+      // Don't leave the previous account's data on this device
+      replaceState({}, {}, {});
+      setOwner("");
+      saveLocal();
+      document.dispatchEvent(new CustomEvent("tracker-updated"));
+    }
     if (window.setSyncStatus) window.setSyncStatus("Guest mode", "idle");
   });
 
