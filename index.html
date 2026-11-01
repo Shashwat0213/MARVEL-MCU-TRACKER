@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="mcu_tracker_icon_192x192.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -129,6 +129,8 @@ header { display: flex; flex-direction: column; align-items: center; gap: 15px; 
       <input type="password" id="loginPassword" placeholder="Password">
     </div>
     
+    <div id="loginMessage" role="alert" style="display:none;font-size:0.85rem;margin:-10px 0 15px;"></div>
+
     <button class="btn-auth-main" id="btnLoginMain">Sign In with Email</button>
     
     <div class="auth-divider">OR</div>
@@ -492,6 +494,45 @@ header { display: flex; flex-direction: column; align-items: center; gap: 15px; 
 
 <!-- MAIN LOGIC SCRIPT -->
 <script>
+// Real sign-in / sign-out tracking.
+// "user-logged-out" also fires on every page load for signed-out visitors,
+// so it only counts as a logout if a session (account or guest) was active.
+let mcuSessionActive = false;
+
+document.addEventListener("user-logged-in", () => {
+  mcuSessionActive = true;
+  try { localStorage.setItem('mcuVisited', 'true'); } catch (e) {}
+  const ls = document.getElementById("loginScreen");
+  if (ls) ls.style.display = "none";
+});
+
+document.addEventListener("user-logged-out", () => {
+  if (!mcuSessionActive) return;
+  mcuSessionActive = false;
+
+  const ls = document.getElementById("loginScreen");
+  if (!ls) return;
+  ls.style.display = "flex";
+
+  const le = document.getElementById("loginEmail");
+  const lp = document.getElementById("loginPassword");
+  if (le) le.value = "";
+  if (lp) lp.value = "";
+  try { localStorage.removeItem('mcuVisited'); } catch (e) {}
+
+  const authUserBox = document.getElementById("authUserBox");
+  if (authUserBox) authUserBox.style.display = "none";
+});
+
+// PWA: register the service worker (offline support + installability)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => {
+      console.warn('Service worker registration failed:', err);
+    });
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // 1. FAST LOADING (1.5 Seconds) & LOGIN SCREEN
   setTimeout(() => {
@@ -524,9 +565,12 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (authUserBox) authUserBox.style.display = "flex";
       if (authOpenBtn) authOpenBtn.style.display = "none";
-      if (authUserName) authUserName.textContent = "Guest";
-      if (authAvatar) authAvatar.textContent = "G";
-      
+      let guestName = "Guest";
+      try { guestName = (localStorage.getItem('mcuGuestName') || '').trim() || "Guest"; } catch (e) {}
+      if (authUserName) authUserName.textContent = guestName;
+      if (authAvatar) authAvatar.textContent = guestName.charAt(0).toUpperCase();
+
+      mcuSessionActive = true;
       window.showToast("✓ Entered as Guest. Progress saves locally.", "ok");
       document.dispatchEvent(new CustomEvent("tracker-updated"));
     });
@@ -538,21 +582,24 @@ document.addEventListener('DOMContentLoaded', () => {
       const password = loginPassword.value;
       if (!email || !password) { alert("Please enter email and password."); return; }
       
+      const submitBtn = document.getElementById('authSubmit');
+      if (submitBtn && submitBtn.disabled) return; // a sign-in is already running
+
+      const loginTab = document.querySelector('.auth-tab[data-auth-tab="login"]');
+      if (loginTab) loginTab.click(); // make sure the form runs in login mode
+
       document.getElementById('authEmail').value = email;
       document.getElementById('authPassword').value = password;
       document.getElementById('authForm').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-      
-      localStorage.setItem('mcuVisited', 'true');
-      loginScreen.style.display = "none";
+      // The screen closes on "user-logged-in"; errors show in #loginMessage.
     });
   }
 
   if (btnGoogleMain) {
     btnGoogleMain.addEventListener('click', () => {
       const googleModalBtn = document.getElementById("googleBtn");
-      if (googleModalBtn) googleModalBtn.click();
-      localStorage.setItem('mcuVisited', 'true');
-      loginScreen.style.display = "none";
+      if (googleModalBtn && !googleModalBtn.disabled) googleModalBtn.click();
+      // The screen closes on "user-logged-in"; errors show in #loginMessage.
     });
   }
 
@@ -655,24 +702,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 6. LOGOUT: SIGN IN PAGE WAPAS
-  document.addEventListener("user-logged-out", () => {
-    const loginScreen = document.getElementById("loginScreen");
-    if (loginScreen) {
-      loginScreen.style.display = "flex";
-      
-      if (loginEmail) loginEmail.value = "";
-      if (loginPassword) loginPassword.value = "";
-      
-      const hasVisited = localStorage.getItem('mcuVisited');
-      if (hasVisited) {
-        localStorage.removeItem('mcuVisited');
-      }
-      
-      const authUserBox = document.getElementById("authUserBox");
-      if (authUserBox) authUserBox.style.display = "none";
-    }
-  });
+  // 6. LOGOUT → sign-in page: handled at the top of this script
 });
 
 // PWA INSTALL BUTTON
