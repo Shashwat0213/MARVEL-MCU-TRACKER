@@ -2,6 +2,11 @@
    MCU TRACKER — THEME + SOUND + DOOMSDAY COUNTDOWN
    ═══════════════════════════════════════════════════════════ */
 
+import {
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
 (function () {
   'use strict';
 
@@ -136,8 +141,58 @@
   }
 
   /* ═══════════ DOOMSDAY COUNTDOWN ═══════════ */
+  // Fallback target (used when no timer has been created in the admin panel)
+  const DEFAULT_TARGET = new Date('2026-12-18T00:00:00+05:30').getTime();
+  let countdownTarget = DEFAULT_TARGET;
+
+  // Admin → Timers: the soonest upcoming timer replaces the default countdown
+  async function loadTimerOverride() {
+    const db = window.__mcuDb;
+    if (!db) return;
+    try {
+      const snap = await getDocs(collection(db, 'timers'));
+      const now = Date.now();
+      let best = null;
+      snap.forEach(d => {
+        const t = d.data();
+        const ms = t.targetDate ? new Date(t.targetDate).getTime() : NaN;
+        if (!Number.isFinite(ms) || ms <= now) return;
+        if (!best || ms < best.ms) best = { ms, t };
+      });
+      if (!best) return;
+
+      countdownTarget = best.ms;
+
+      const section = document.getElementById('doomsdayCountdown');
+      if (!section) return;
+      const title = String(best.t.title || '').trim();
+      const subtitle = String(best.t.subtitle || '').trim();
+
+      const h2 = section.querySelector('h2');
+      const p = section.querySelector('.doomsday-content p');
+      const kicker = section.querySelector('.doomsday-kicker');
+      const dateEl = section.querySelector('.doomsday-date');
+      const poster = section.querySelector('.doomsday-poster');
+
+      if (h2 && title) h2.textContent = title.toUpperCase();
+      if (p && title) p.textContent = 'Live countdown to the ' + title + ' release. IST.';
+      if (kicker) {
+        if (subtitle) kicker.textContent = '⚠ ' + subtitle.toUpperCase();
+        else if (!/doomsday/i.test(title)) kicker.textContent = '⚠ UPCOMING RELEASE';
+      }
+      if (dateEl) {
+        dateEl.textContent = new Date(best.ms).toLocaleDateString('en-GB', {
+          day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Kolkata'
+        }).toUpperCase() + ' • INDIA TIME';
+      }
+      if (poster && best.t.poster) poster.src = best.t.poster;
+    } catch (e) {
+      // Timers unreadable (offline / rules) — keep the default countdown
+      console.warn('Timers not loaded:', e);
+    }
+  }
+
   function startDoomsday() {
-    const target = new Date('2026-12-18T00:00:00+05:30').getTime();
     const daysEl = document.getElementById('doomsdayDays');
     const hoursEl = document.getElementById('doomsdayHours');
     const minsEl = document.getElementById('doomsdayMinutes');
@@ -146,7 +201,7 @@
     if (!daysEl || !hoursEl || !minsEl || !secsEl) return;
 
     function tick() {
-      let diff = target - Date.now();
+      let diff = countdownTarget - Date.now();
       if (diff < 0) diff = 0;
 
       daysEl.textContent  = String(Math.floor(diff / 86400000)).padStart(3, '0');
@@ -157,6 +212,7 @@
 
     tick();
     setInterval(tick, 1000);
+    loadTimerOverride();
   }
 
   /* ═══════════ INIT ═══════════ */
