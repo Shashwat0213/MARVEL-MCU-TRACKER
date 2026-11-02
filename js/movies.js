@@ -21,6 +21,19 @@ if (!db) {
   let currentSearch = "";
   let currentSort = "default";
 
+  /* ═══════════ SAFETY HELPERS ═══════════ */
+  // Only allow normal web links (blocks javascript:, data:, etc.)
+  function safeUrl(u) {
+    try {
+      const url = new URL(String(u || "").trim());
+      return (url.protocol === "https:" || url.protocol === "http:") ? url.href : "";
+    } catch (e) { return ""; }
+  }
+
+  function fallbackPoster(title) {
+    return "https://placehold.co/500x750/0d1422/00e5ff?text=" + encodeURIComponent(title || "MCU");
+  }
+
   /* ═══════════ LOAD FROM FIRESTORE ONLY ═══════════ */
   async function loadMoviesFromFirestore() {
     try {
@@ -67,7 +80,7 @@ if (!db) {
     const dropped = window.__mcuDropped || {};
 
     if (currentFilter === "movie") {
-      result = result.filter(m => (m.type || "movie") === "movie");
+      result = result.filter(m => (m.type || "movie") !== "series");
     } else if (currentFilter === "series") {
       result = result.filter(m => m.type === "series");
     } else if (currentFilter === "watched") {
@@ -146,7 +159,8 @@ if (!db) {
       li.innerHTML = `
         <div class="poster-container">
           <img class="poster" src="${window.escapeAttr(posterSrc)}" alt="${title}" loading="lazy"
-               onerror="this.onerror=null; this.src='https://placehold.co/500x750/0d1422/00e5ff?text=${encodeURIComponent(movie.title || 'MCU')}';">
+               data-fallback="${window.escapeAttr(fallbackPoster(movie.title))}"
+               onerror="this.onerror=null; this.src=this.dataset.fallback;">
           <div class="poster-overlay"></div>
           <div class="phase-badge">${phase}</div>
           <button class="favorite-btn ${isFavorite ? "active" : ""}" data-action="favorite" data-id="${window.escapeAttr(movie.id)}" title="Favorite">
@@ -221,7 +235,9 @@ if (!db) {
     const total = allMovies.length;
     const done = allMovies.filter(m => watched[m.id]).length;
     const favs = allMovies.filter(m => favorites[m.id]).length;
-    const remaining = total - done;
+    const droppedMap = window.__mcuDropped || {};
+    const droppedCount = allMovies.filter(m => droppedMap[m.id] && !watched[m.id]).length;
+    const remaining = total - done - droppedCount;
     const percent = total > 0 ? Math.round((done / total) * 100) : 0;
 
     const setText = (id, val) => {
@@ -344,7 +360,8 @@ if (!db) {
       poster.src = movie.poster || "";
       poster.alt = movie.title || "";
       poster.onerror = () => {
-        poster.src = "https://placehold.co/500x750/0d1422/00e5ff?text=" + encodeURIComponent(movie.title || "MCU");
+        poster.onerror = null;
+        poster.src = fallbackPoster(movie.title);
       };
     }
     if (title) title.textContent = movie.title || movie.id;
@@ -379,17 +396,20 @@ if (!db) {
     if (cast) cast.textContent = movie.cast ? "Cast: " + movie.cast : "";
 
     if (trailerBtn) {
-      if (movie.trailer) {
+      const trailerLink = safeUrl(movie.trailer);
+      if (trailerLink) {
         trailerBtn.style.display = "";
-        trailerBtn.onclick = () => window.open(movie.trailer, "_blank", "noopener");
+        trailerBtn.onclick = () => window.open(trailerLink, "_blank", "noopener");
       } else {
         trailerBtn.style.display = "none";
       }
     }
     if (downloadBtn) {
-      if (movie.downloadUrl) {
+      const downloadLink = safeUrl(movie.downloadUrl);
+      if (downloadLink) {
         downloadBtn.style.display = "";
-        downloadBtn.href = movie.downloadUrl;
+        downloadBtn.href = downloadLink;
+        downloadBtn.rel = "noopener noreferrer";
       } else {
         downloadBtn.style.display = "none";
       }
