@@ -47,6 +47,13 @@ if (!auth || !db) {
   const authAvatar = $("authAvatar");
   const authOpenBtn = $("authOpenBtn");
 
+  // Dashboard profile card
+  const GUEST_NAME_KEY = "mcuGuestName";
+  const v3Greeting = $("v3Greeting");
+  const v3Avatar = $("v3Avatar");
+  const v3NameInput = $("v3NameInput");
+  const v3SaveName = $("v3SaveName");
+
   let currentUser = null;
 
   function openAuthModal() {
@@ -82,9 +89,77 @@ if (!auth || !db) {
   }
 
   function showMessage(msg, ok = false) {
-    if (!authMessage) return;
-    authMessage.textContent = msg;
-    authMessage.classList.toggle("success", ok);
+    if (authMessage) {
+      authMessage.textContent = msg;
+      authMessage.classList.toggle("success", ok);
+    }
+    // The sign-in screen has no access to the (hidden) auth modal's message,
+    // so show the same text there too.
+    const loginMsg = $("loginMessage");
+    if (loginMsg) {
+      loginMsg.textContent = msg || "";
+      loginMsg.style.display = msg ? "block" : "none";
+      loginMsg.style.color = ok ? "#34d399" : "#f87171";
+    }
+  }
+
+  /* ═══════════ DASHBOARD PROFILE CARD ═══════════ */
+  function getGuestName() {
+    try { return (localStorage.getItem(GUEST_NAME_KEY) || "").trim() || "Guest"; }
+    catch (e) { return "Guest"; }
+  }
+
+  function getShownName() {
+    if (currentUser) {
+      return currentUser.displayName || (currentUser.email ? currentUser.email.split("@")[0] : "User");
+    }
+    return getGuestName();
+  }
+
+  function refreshProfileCard() {
+    const name = getShownName();
+    if (v3Greeting) v3Greeting.textContent = "Welcome back, " + name + " ⚡";
+    if (v3Avatar) {
+      v3Avatar.textContent = "";
+      if (currentUser && currentUser.photoURL) {
+        const img = document.createElement("img");
+        img.src = currentUser.photoURL;
+        img.alt = name;
+        img.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:50%";
+        v3Avatar.appendChild(img);
+      } else {
+        v3Avatar.textContent = (name.trim().charAt(0) || "G").toUpperCase();
+      }
+    }
+  }
+
+  async function handleSaveName() {
+    const name = v3NameInput ? v3NameInput.value.trim().slice(0, 24) : "";
+    if (!name) { window.showToast("Enter a display name first.", "error"); return; }
+
+    if (v3SaveName) v3SaveName.disabled = true;
+    try {
+      if (currentUser) {
+        await updateProfile(currentUser, { displayName: name });
+        await saveUserProfile(currentUser);
+        await updateAuthUI(currentUser);
+      } else {
+        try { localStorage.setItem(GUEST_NAME_KEY, name); } catch (e) {}
+        // Guest label in the header (only while the guest box is showing)
+        if (authUserBox && authUserBox.style.display === "flex") {
+          if (authUserName) authUserName.textContent = name;
+          if (authAvatar) authAvatar.textContent = name.charAt(0).toUpperCase();
+        }
+        refreshProfileCard();
+      }
+      if (v3NameInput) v3NameInput.value = "";
+      window.showToast("✓ Name saved", "ok");
+    } catch (e) {
+      console.error("Save name failed:", e);
+      window.showToast("Could not save name. Try again.", "error");
+    } finally {
+      if (v3SaveName) v3SaveName.disabled = false;
+    }
   }
 
   async function saveUserProfile(user) {
@@ -172,6 +247,8 @@ if (!auth || !db) {
 
       window.setSyncStatus("not signed in", "idle");
     }
+
+    refreshProfileCard();
   }
 
   async function handleAuthSubmit(e) {
@@ -332,6 +409,14 @@ if (!auth || !db) {
 
   if (authForm) authForm.addEventListener("submit", handleAuthSubmit);
   if (googleBtn) googleBtn.addEventListener("click", handleGoogleLogin);
+
+  if (v3SaveName) v3SaveName.addEventListener("click", handleSaveName);
+  if (v3NameInput) {
+    v3NameInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") { e.preventDefault(); handleSaveName(); }
+    });
+  }
+  refreshProfileCard();
 
   // ⚡ GUEST BUTTON CLICK ⚡
   const guestBtn = $("guestBtn");
