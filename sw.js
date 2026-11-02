@@ -2,13 +2,16 @@
    MCU TRACKER — SERVICE WORKER (Proper PWA Caching)
    ═══════════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'mcu-tracker-v6';
+const CACHE_NAME = 'mcu-tracker-v7';
 const STATIC_ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
   "./mcu_tracker_icon_192x192.png",
   "./mcu_tracker_icon_512x512.png",
+  "./mcu_tracker_icon_192x192_maskable.png",
+  "./mcu_tracker_icon_512x512_maskable.png",
+  "./apple-touch-icon.png",
   "./css/style.css",
   "./css/themes.css",
   "./css/animations.css",
