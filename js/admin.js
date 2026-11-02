@@ -46,6 +46,25 @@ if (!auth || !db) {
     return u;
   }
 
+  // Login token proving to the backend that this is the admin
+  async function authHeaders() {
+    const u = auth.currentUser;
+    if (!u) throw new Error("Please login first.");
+    const token = await u.getIdToken();
+    return { Authorization: "Bearer " + token };
+  }
+
+  // Only normal web links may be saved
+  function cleanUrl(u) {
+    const v = String(u || "").trim();
+    if (!v) return "";
+    try {
+      const url = new URL(v);
+      if (url.protocol === "https:" || url.protocol === "http:") return url.href;
+    } catch (e) {}
+    throw new Error("Links must start with https:// — check: " + v.slice(0, 40));
+  }
+
   function adminToast(msg, isError) {
     if (window.showToast) window.showToast(msg, isError ? "error" : "ok");
   }
@@ -169,8 +188,10 @@ if (!auth || !db) {
     if (resultsEl) resultsEl.innerHTML = "<p style='padding:12px;opacity:0.7'>Searching TMDB…</p>";
 
     try {
-      const res = await fetch(`${RENDER_BACKEND_URL}/api/tmdb/search?type=${type}&query=${encodeURIComponent(queryText)}`);
-      if (!res.ok) throw new Error("Server error: " + res.status);
+      const res = await fetch(`${RENDER_BACKEND_URL}/api/tmdb/search?type=${encodeURIComponent(type)}&query=${encodeURIComponent(queryText)}`, {
+        headers: await authHeaders()
+      });
+      if (!res.ok) throw new Error(res.status === 401 || res.status === 403 ? "Admin login required for TMDB search." : "Server error: " + res.status);
       const data = await res.json();
       
       const results = (data.results || []).slice(0, 20);
@@ -208,7 +229,10 @@ if (!auth || !db) {
 
   async function fillFromTmdb(id, type) {
     try {
-      const res = await fetch(`${RENDER_BACKEND_URL}/api/tmdb/details/${type}/${id}`);
+      const res = await fetch(`${RENDER_BACKEND_URL}/api/tmdb/details/${encodeURIComponent(type)}/${encodeURIComponent(id)}`, {
+        headers: await authHeaders()
+      });
+      if (!res.ok) throw new Error(res.status === 401 || res.status === 403 ? "Admin login required for TMDB." : "Server error: " + res.status);
       const d = await res.json();
 
       const title = d.title || d.name || "";
@@ -219,6 +243,7 @@ if (!auth || !db) {
       const genres = (d.genres || []).map(g => g.name).join(", ");
 
       const set = (eid, val) => { const el = $(eid); if (el) el.value = val == null ? "" : val; };
+      editingExistingId = false;
       set("mId", slug);
       set("mTitle", title);
       set("mType", type === "tv" ? "series" : "movie");
@@ -256,11 +281,11 @@ if (!auth || !db) {
       phase: val("mPhase") || "MCU",
       importance: val("mImportance") || "Important",
       timelineSlot: parseInt(val("mSlot")) || 999,
-      poster: val("mPoster"),
-      backdrop: val("mBackdrop"),
-      trailer: val("mTrailer"),
-      downloadUrl: val("mDownload"),
-      watchUrl: val("mWatchUrl"),
+      poster: cleanUrl(val("mPoster")),
+      backdrop: cleanUrl(val("mBackdrop")),
+      trailer: cleanUrl(val("mTrailer")),
+      downloadUrl: cleanUrl(val("mDownload")),
+      watchUrl: cleanUrl(val("mWatchUrl")),
       description: val("mDescription"),
       cast: val("mCast"),
       genres: val("mGenres"),
@@ -270,11 +295,19 @@ if (!auth || !db) {
     };
   }
 
+  let editingExistingId = false; // true while a catalog item is loaded for editing
+
   async function saveMovie(status) {
     try {
       await requireAdmin();
       const payload = buildMoviePayload(status);
       if (!payload.id || !payload.title) throw new Error("ID and Title are required.");
+
+      // Don't silently overwrite a different movie that has the same ID
+      const existing = await getDoc(doc(db, "movies", payload.id));
+      if (existing.exists() && !editingExistingId) {
+        throw new Error('A movie with ID "' + payload.id + '" already exists. Edit it from the Catalog, or change the ID.');
+      }
 
       await setDoc(doc(db, "movies", payload.id), payload, { merge: true });
       if (window.logActivity) {
@@ -287,6 +320,7 @@ if (!auth || !db) {
         statusEl.style.color = "var(--success)";
       }
       adminToast(status === "draft" ? "📝 Draft saved" : "✅ Published!");
+      editingExistingId = true;
       document.dispatchEvent(new CustomEvent("movies-changed"));
     } catch (e) {
       console.error(e);
@@ -305,6 +339,7 @@ if (!auth || !db) {
     const typeEl = $("mType"); if (typeEl) typeEl.value = "movie";
     const impEl = $("mImportance"); if (impEl) impEl.value = "Important";
     const statusEl = $("movieFormStatus"); if (statusEl) statusEl.textContent = "";
+    editingExistingId = false;
   }
 
   /* ═══════════ CATALOG ═══════════ */
@@ -393,6 +428,7 @@ if (!auth || !db) {
       set("mCast", x.cast);
       set("mGenres", x.genres);
 
+      editingExistingId = true;
       switchAdminTab("add");
       adminToast("✓ Loaded for editing");
     } catch (e) {
